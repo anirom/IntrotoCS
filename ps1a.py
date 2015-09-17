@@ -8,20 +8,24 @@
 n = 2
 primeNumber = 0
 
-while primeNumber < 1000: # Seguirá corriendo hasta que llegue a 1000 numeros primos
+# No se detendra hasta que llegue a 1000 numeros primos
+while primeNumber < 1000:
     x = n
     contador = 0
-    number = n%x # Verifica si es una division exacta
+    # Verifica si es una division exacta
+    number = n%x
     if number == 0:
         contador += 1
         x -= 1
-        for x in range(x,0,-1): # Va disminuyendo el valor del divisor
+        # Disminuye el valor del divisor
+        for x in range(x,0,-1):
             number = n%x
             if number == 0: # Verifica si es exacta o no la division
                 contador += 1
             else:
                 x -= 1
-    if contador == 2: # Se usa para verificar que sólo tenga dos divisiones exactas. Que fuera entre 1 y el mismo numero
+    # Verifica que solo tenga dos divisiones exactas, que seria entre 1 y su mismo numero
+    if contador == 2:
         print(n)
         primeNumber += 1
         n += 1
