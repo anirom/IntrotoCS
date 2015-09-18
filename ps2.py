@@ -3,9 +3,9 @@
 # MIT OpenCourseWare EE&CS
 # McNugget Problem
 
-# La ecuación que representa este problema es 6a + 9b + 20c = n, donde a,b,c y n > 0
-# El teorema que explica el porqué es continuo para estos valores dice que a partir de una secuencia larga de numeros
-# continuos, entonces se puede contar cualquier numero posterior como la adición de la unidad.
+# La ecuaciÃ³n que representa este problema es 6a + 9b + 20c = n, donde a,b,c y n > 0
+# El teorema que explica el porquÃ© es continuo para estos valores dice que a partir de una secuencia larga de numeros
+# continuos, entonces se puede contar cualquier numero posterior como la adiciÃ³n de la unidad.
 
 a = 0
 b = 0
@@ -27,8 +27,3 @@ for i in range(50,66):
                 n = 6*a + 9*b + 20*c
                 if n == i:
                     print(a,b,c)
-
-
-
-
-
