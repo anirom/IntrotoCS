@@ -1,4 +1,4 @@
-# IntrotoCS
+# Introduction to Computer Science and Programming 
 Projects from MITOpenCourseWare
 
 Assigments from Introduction to Computer Science and Programming.
