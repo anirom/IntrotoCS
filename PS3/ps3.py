@@ -7,12 +7,10 @@
 # por una cadena compuesta de elementos alfabeticos de sólo 4 símbolos
 
 # Este programa encuentra el numero de veces que aparece una key string en un string dado
-import string
 
-def iterativeFunction(s,fs):
+def iterativeFunction(s,fs,start=0):
 
-    numberKey = 0
-    start = 0
+    numKey = 0
     end = len(s)
     for i in range(end):
         start = s.find(fs,start)
@@ -20,16 +18,28 @@ def iterativeFunction(s,fs):
             break
         else:
             start += 1
-            numberKey += 1
+            numKey += 1
 
-    return numberKey
+    return numKey
 
-def recursiveFunction(s,fs,start = 0, numKey = 0):
-    start = s.find(fs,start)
-    if start == -1:
-        return numKey
-    else:
-        return recursiveFunction(s,fs,start+1, numKey+1)
+def recursiveFunction(s,fs,start = 0):
+
+    numKey = 0
+    def insideRecursiveFunction(s,fs,start):
+        nonlocal numKey
+        start = s.find(fs,start)
+        if start == -1:
+            return numKey
+        else:
+            numKey += 1
+            return insideRecursiveFunction(s, fs, start + 1)
+    recursiveFunc(s,fs,start)
+    return numKey
+
+
+
+
+
 
 print(iterativeFunction("attgcacgttgattgacttca","tt"))
 print(iterativeFunction("attgcacgttgattgacttca","ttg"))
