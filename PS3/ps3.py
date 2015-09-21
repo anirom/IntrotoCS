@@ -33,13 +33,9 @@ def recursiveFunction(s,fs,start = 0):
         else:
             numKey += 1
             return insideRecursiveFunction(s, fs, start + 1)
-    recursiveFunc(s,fs,start)
+
+    insideRecursiveFunction(s,fs,start)
     return numKey
-
-
-
-
-
 
 print(iterativeFunction("attgcacgttgattgacttca","tt"))
 print(iterativeFunction("attgcacgttgattgacttca","ttg"))
