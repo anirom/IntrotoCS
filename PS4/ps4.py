@@ -22,14 +22,25 @@ def nestEggFixed(salary, save, growthrate, years):
         return "Check the ranges of percentages"
 
 def nestEggVariable(salary, save, growthrates):
-    years = len(growthrates)
     retirementfund = []
-    for i in range(1,years+1):
+    for i in range(1,len(growthrates)+1):
         if i == 1:
             retirement = salary*save*0.01
             retirementfund.insert(i-1, retirement)
         else:
             retirement = retirementfund[i-2] *(1+0.01*growthrates[i-1]) + retirementfund[0]
+            retirementfund.insert(i-1,retirement)
+
+    return retirementfund
+
+def postRetirement(savings, growthrates, expenses):
+    retirementfund = []
+    for i in range(1,len(growthrates)+1):
+        if i == 1:
+            retirement = savings*(1+0.01*growthrates[i-1]) - expenses
+            retirementfund.insert(i-1, retirement)
+        else:
+            retirement = retirementfund[i-2] *(1+0.01*growthrates[i-1]) - expenses
             retirementfund.insert(i-1,retirement)
 
     return retirementfund
@@ -48,8 +59,16 @@ def testNestEggVariable():
     print(nestEggVariable(5000,5,[5,7,6]))
     print(nestEggVariable(4000,3,[3,6,9,12]))
 
+def testPostRetirement():
+
+    print("\n How much you can withdraw to spend each year after retirement")
+    print(postRetirement(100000,[10,5,0,5,1],30000))
+    print(postRetirement(70000,[3,5,3],10000))
+    print(postRetirement(96700,[2,1,3,8],27500))
+
 testNestEggFixed()
 testNestEggVariable()
+testPostRetirement()
 
 
 
