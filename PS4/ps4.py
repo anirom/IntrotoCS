@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 # MIT OpenCourseWare
-# Plannig for the future
+# Planning for the future
 
 # Este programa calcula el saldo al fondo del retiro por cada año y lo guarda en una lista.
 
