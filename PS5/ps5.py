@@ -91,10 +91,13 @@ def displayHand(hand):
 
     hand: dictionary (string -> int)
     """
+    finalhand = ""
+
     for letter in hand.keys():
         for j in range(hand[letter]):
-            print(letter,)              # print all on the same line
-    print()                             # print an empty line
+            finalhand = finalhand + letter + " " # Almacena letra por letra para mostrarlo de forma horizontal
+
+    return finalhand
 
 def dealHand(n):
     """
@@ -111,14 +114,15 @@ def dealHand(n):
     hand = {}
     num_vowels = round(n / 3)
 
+    # Genera una selección random de vocales
     for i in range(num_vowels):
         x = VOWELS[random.randrange(0,len(VOWELS))]
         hand[x] = hand.get(x, 0) + 1
 
+    # Genera una selección random de consonantes
     for i in range(num_vowels, n):
         x = CONSONANTS[random.randrange(0,len(CONSONANTS))]
         hand[x] = hand.get(x, 0) + 1
-
     return hand
 
 #
