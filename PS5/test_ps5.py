@@ -260,6 +260,13 @@ def testIsValidWord(wordlist):
     if failure == True:
         print("SUCCESS: isValidWord()")
 
+# ----------------------------------------- Test Play Hand -----------------------------------------
+
+def testPlayHand(wordlist):
+    print("\n\t****************** Word Games ******************")
+    hand = dealHand(12)
+    playHand(hand, wordlist)
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 wordlist = loadWords()
@@ -271,3 +278,4 @@ testDisplayHand()
 testDealHand()
 testUpdateHand()
 testIsValidWord(wordlist)
+testPlayHand(wordlist)

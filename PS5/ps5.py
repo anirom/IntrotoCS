@@ -205,7 +205,7 @@ def isValidWord(word, hand, wordlist):
 #
 # Problem #4: Playing a hand
 #
-def play_hand(hand, word_list):
+def playHand(hand, wordlist):
     """
     Permite al usuario jugar la mano dada, como sigue:
 
@@ -233,13 +233,28 @@ def play_hand(hand, word_list):
       hand: dictionary (string -> int)
       word_list: list of lowercase strings
     """
+    total = 0
 
-    # TO DO ...
-    print("play_hand not implemented.") # replace this with your code...
+    # Se le muestra al usuario las letras de la jugada
+    print("Partida actual:", displayHand(hand))
+    word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+    while word != '.': # Se ejecutará siempre y cuando no se introduzca un punto
+        while not word.isalpha(): # Para validar que siempre introduza letras
+            word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+        valid = isValidWord(word, hand, wordlist)
+        while not valid: # Si la palabra no es valida, volverá a pedirla
+            word = input("Lo siento, la palabra que ingresaste no es valida. Prueba con otra palabra: ").lower()
+            valid = isValidWord(word, hand, wordlist)
+        points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
+        total = points + total # Lleva el conteo total
+        print("Puntos por palabra:", points,"puntos. Total:", total," puntos.")
+        hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
+        print("Partida actual:",displayHand(hand))
+        word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+    print("Score final:", total)
 
 #
 # Problem #5: Playing a game
-# Make sure you understand how this code works!
 #
 def play_game(word_list):
     """
