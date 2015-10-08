@@ -115,7 +115,7 @@ def dealHand(n):
     """
 
     hand = {}
-    num_vowels = round(n / 3)
+    num_vowels = n // 3
 
     # Genera una selección random de vocales
     for i in range(num_vowels):
@@ -158,20 +158,49 @@ def updateHand(hand, word):
 #
 # Problem #3: Test word validity
 #
-def is_valid_word(word, hand, word_list):
+def isValidWord(word, hand, wordlist):
     """
     Regresa verdadero si la palabra está en la lista y está
     compuesta por las letras que se tienen en la jugada.
     De otro modo, regresa falso.
-    No hay que cambiar ni la jugada o la lista.
-
-    Does not mutate hand or word_list.
+    No hay que cambiar ni la jugada o la lista de palabras.
 
     word: string
     hand: dictionary (string -> int)
     word_list: list of lowercase strings
     """
-    # TO DO ...
+
+    valid = False
+    found = False
+    low = 0
+    high = len(wordlist)-1
+
+    # Primero se verifica que la palabra esté compuesta por las letras dadas en la jugada
+    for letter in word:
+        if letter in hand and hand[letter] >= 1:
+            valid = True
+        else:
+            return False
+
+    # Una vez verificada que la palabra esté conformada con las letras de la jugada,
+    # se hará la busqueda de la palabra dada en la ista de las palabras validas
+    # mediante una busqueda binaria
+    if valid == True:
+        while low <= high and not found:
+            middle = (low + high)//2
+            if wordlist[middle] < word:
+                low = middle + 1
+                # print(wordlist[middle])
+            elif wordlist[middle] > word:
+                high = middle - 1
+                # print(wordlist[middle])
+            else:
+                found = True
+
+    if not found:
+        return found
+    else:
+        return found
 
 #
 # Problem #4: Playing a hand

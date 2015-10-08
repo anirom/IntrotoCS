@@ -23,7 +23,8 @@ def testLoadWords():
         print("Loading words...")
         print(" ", len(wordlist), "words loaded.")
     else:
-        print("FAILED LOADING LIST")
+        print("Failed Loading List")
+
 
 # ----------------------------------------- Test Get Word Score -----------------------------------------
 
@@ -48,6 +49,7 @@ def testGetWordScore():
 
     if not failure: print("SUCCESS: testGetWordScore()")
 
+
 # ----------------------------------------- Test Get Frequency -----------------------------------------
 
 def testGetFrequencyDict():
@@ -63,33 +65,33 @@ def testGetFrequencyDict():
     # Test 1
     lovers = {'l': 1, 'o': 1, 'v': 1, 'e': 1, 'r': 1, 's': 1}
     frequency = getFrequencyDict(words[0])
-    if frequency == lovers:
+    if lovers == frequency:
         failure = True
     else:
-        print("FAILURE: testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo",frequency)
+        print("FAILURE (Test 1): testgetFrequencyDict()")
+        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
 
     # Test 2
 
     hello = {'h': 1, 'e': 1, 'l': 2, 'o': 1}
     frequency = getFrequencyDict(words[1])
-    if frequency == hello:
+    if hello == frequency:
         failure = True
     else:
-        print("FAILURE: testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo",frequency)
+        print("FAILURE (Test 2): testgetFrequencyDict()")
+        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
 
     # Test 3
 
     luffing = {'l': 1, 'u': 1, 'f': 2, 'i': 1, 'n': 1, 'g': 1}
     frequency = getFrequencyDict(words[2])
-    if frequency == luffing:
+    if luffing == frequency:
         failure = True
     else:
-        print("FAILURE: testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo",frequency)
+        print("FAILURE (Test 3): testgetFrequencyDict()")
+        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
 
-    if failure == True: print("SUCCESS: testGetFrequencyDict()")
+    if failure: print("SUCCESS: testGetFrequencyDict")
 
 # ----------------------------------------- Test Display Hand -----------------------------------------
 
@@ -111,11 +113,12 @@ def testDisplayHand():
         else:
             failure = False
 
-    if failure == True:
+    if failure:
         print("SUCCESS: testDisplayHand()")
     else:
         print("FAILURE: testDisplayHand()")
         print("\tNo se está obteniendo una lista de regreso")
+
 
 # ----------------------------------------- Test Deal Hand -----------------------------------------
 
@@ -144,6 +147,7 @@ def testDealHand():
     else:
         print("SUCCESS: testDealHand()")
 
+
 # ----------------------------------------- Test Update Hand -----------------------------------------
 
 def testUpdateHand():
@@ -162,19 +166,19 @@ def testUpdateHand():
 
     handupdated = updateHand(hand, word)
     if expectedhand != handupdated:
-        print("FAILURE: testUpdateHand")
+        print("FAILURE (Test 1): testUpdateHand()")
         print("\tSe esperaba", expectedhand, "y se obtuvo", handupdated)
     else:
         failure = True
 
     # Test 2
-    hand = {'e':1, 'v':2, 'n':1, 'i':1, 'l':2}
+    hand = {'e': 1, 'v': 2, 'n': 1, 'i': 1, 'l': 2}
     word = "evil"
-    expectedhand = {'v':1, 'n':1, 'l':1}
+    expectedhand = {'v': 1, 'n': 1, 'l': 1}
 
     handupdated = updateHand(hand, word)
     if expectedhand != handupdated:
-        print("FAILURE: testUpdateHand")
+        print("FAILURE (Test 2): testUpdateHand()")
         print("\tSe esperaba", expectedhand, "y se obtuvo", handupdated)
     else:
         failure = True
@@ -186,14 +190,79 @@ def testUpdateHand():
 
     handupdated = updateHand(hand, word)
     if expectedhand != handupdated:
-        print("FAILURE: testUpdateHand")
+        print("FAILURE (Test 3): testUpdateHand()")
         print("\tSe esperaba", expectedhand, "y se obtuvo", handupdated)
     else:
         failure = True
 
-    if failure == True: print("SUCCESS: testUpdateHand()")
+    if failure: print("SUCCESS: testUpdateHand()")
+
+
+# ----------------------------------------- Test Is Valid Word -----------------------------------------
+
+def testIsValidWord(wordlist):
+    """
+    Unit test for isValidWord
+    """
+    #
+    # Test para verificar si la palabra ingresada se conforma de las letras dadas en la partida y que
+    # sea una palabra que pertenezca a la lista de palabras validas
+    #
+    failure = False
+
+    # Test 1
+
+    hand = {'r': 1, 'a': 3, 'p': 2, 'e': 1, 't': 1, 'u': 1}
+    word = "rpture"
+    valid = isValidWord(word, hand, wordlist)
+
+    if not valid:
+        failure = True
+    else:
+        print("FAILURE (Test 1): testIsValidWord()")
+        print("\tSe esperaba un valor False y regresó un valor", valid)
+
+    # Test 2
+
+    hand = {'n': 1, 'h': 1, 'o': 1, 'y': 1, 'd': 1, 'w': 1, 'e': 2}
+    word = "honey"
+    valid = isValidWord(word, hand, wordlist)
+
+    if valid:
+        failure = True
+    else:
+        print("FAILURE (Test 2): testIsValidWord()")
+        print("\tSe esperaba un valor True y regresó un valor", valid)
+
+    # Test 3
+
+    hand = {'e': 1, 'v': 2, 'n': 1, 'i': 1, 'l': 0}
+    word = "evil"
+    valid = isValidWord(word, hand, wordlist)
+
+    if not valid:
+        failure = True
+    else:
+        print("FAILURE (Test 3): testIsValidWord()")
+        print("\tSe esperaba un valor False y regresó un valor", valid)
+
+    # Test 4
+
+    word = "paint"
+    valid = isValidWord(word, hand, wordlist)
+
+    if not valid:
+        failure = True
+    else:
+        print("FAILURE (Test 3): testIsValidWord()")
+        print("\tSe esperaba un valor False y regresó un valor", valid)
+
+    if failure == True:
+        print("SUCCESS: isValidWord()")
 
 # ----------------------------------------- Running Test -----------------------------------------
+
+wordlist = loadWords()
 
 testLoadWords()
 testGetWordScore()
@@ -201,3 +270,4 @@ testGetFrequencyDict()
 testDisplayHand()
 testDealHand()
 testUpdateHand()
+testIsValidWord(wordlist)
