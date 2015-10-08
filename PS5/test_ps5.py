@@ -263,14 +263,14 @@ def testIsValidWord(wordlist):
 # ----------------------------------------- Test Play Hand -----------------------------------------
 
 def testPlayHand(wordlist):
-    print("\n\t****************** Word Games ******************")
+    print("\n\t****************** Words Game ******************")
     hand = dealHand(7)
     playHand(hand, wordlist)
 
 # ----------------------------------------- Test Palying a Game -----------------------------------------
 
 def testPlayGame(wordlist):
-    print("\n\t****************** Word Games ******************")
+    print("\n\t****************** Words Game ******************")
     playGame(wordlist)
 
 # ----------------------------------------- Running Test -----------------------------------------

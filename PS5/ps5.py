@@ -279,6 +279,7 @@ def playGame(wordlist):
     while not HAND_SIZE.isdigit(): # Para verificar que sea siempre numeros
         HAND_SIZE = input("Sólo se aceptan números enteros. Elige cuantas letras quieres para la partida: ")
     HAND_SIZE = int(HAND_SIZE) # Para pasar de string a entero
+    handOrg = None
 
    # Mientras se cumpla alguna de las siguientes
     while True:
@@ -289,16 +290,20 @@ def playGame(wordlist):
             playHand(hand, wordlist, HAND_SIZE)
             print()
         elif cmd == 'r':
-            playHand(handOrg, wordlist, HAND_SIZE)
-            print()
+            if handOrg == None:
+                print("No se han iniciado partidas.")
+            else:
+                playHand(handOrg, wordlist, HAND_SIZE)
+                print()
         elif cmd == 'e':
             break
         else:
-            print("Invalid command.")
+            print("Comando invalido.")
 
 #
 # Build data structures used for entire session and play game
 #
 if __name__ == '__main__':
-    word_list = loadWords()
-    play_game(word_list)
+    wordlist = loadWords()
+    print("\n\t****************** Words Game ******************")
+    playGame(wordlist)
