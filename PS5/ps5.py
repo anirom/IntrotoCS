@@ -42,6 +42,7 @@ def getFrequencyDict(sequence):
     sequence: string or list
     return: dictionary
     """
+
     # freqs: dictionary (element_type -> int)
     freq = {}
     for x in sequence:
@@ -91,6 +92,7 @@ def displayHand(hand):
 
     hand: dictionary (string -> int)
     """
+
     finalhand = ""
 
     for letter in hand.keys():
@@ -111,6 +113,7 @@ def dealHand(n):
     n: int >= 0
     returns: dictionary (string -> int)
     """
+
     hand = {}
     num_vowels = round(n / 3)
 
@@ -128,23 +131,29 @@ def dealHand(n):
 #
 # Problem #2: Update a hand by removing letters
 #
-def update_hand(hand, word):
+def updateHand(hand, word):
     """
     Asumimos que la jugada tiene todas las letras que conforman la palabra.
-    En otras palabras, esto supone que sin importar cuantas veces
-    aparezca la letra en la palabra, la jugada tiene al menos tantas
-    de esa letra en ella.
 
     Actualiza la jugada: Utiliza las letras de la palabra dada y regresa
     las letras restantes de esa jugada.
 
-    No hay efectos secundarios: no cambian las letras.
+    No hay efectos secundarios: así que no cambian las letras.
 
     word: string
     hand: dictionary (string -> int)
     returns: dictionary (string -> int)
     """
-    # TO DO ...
+
+    # Busca cada letra de la palabra en el diccionario y le va restando una unidad a la cantidad de veces que
+    # aparece la letra
+    for letter in word:
+        if letter in hand:
+            hand[letter] = hand[letter] - 1
+            if hand[letter] == 0:
+                del hand[letter]
+
+    return hand
 
 #
 # Problem #3: Test word validity
@@ -169,7 +178,7 @@ def is_valid_word(word, hand, word_list):
 #
 def play_hand(hand, word_list):
     """
-    Permite al usuario Allows the user to play the given hand, as follows:
+    Permite al usuario jugar la mano dada, como sigue:
 
     * Se muestra la jugada.
 
@@ -195,6 +204,7 @@ def play_hand(hand, word_list):
       hand: dictionary (string -> int)
       word_list: list of lowercase strings
     """
+
     # TO DO ...
     print("play_hand not implemented.") # replace this with your code...
 
