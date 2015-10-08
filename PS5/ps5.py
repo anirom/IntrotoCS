@@ -9,7 +9,6 @@ import random
 
 VOWELS = 'aeiou'
 CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
-HAND_SIZE = 7
 
 SCRABBLE_LETTER_VALUES = {
     'a': 1, 'b': 3, 'c': 3, 'd': 2, 'e': 1, 'f': 4, 'g': 2, 'h': 4, 'i': 1, 'j': 8, 'k': 5, 'l': 1, 'm': 3, 'n': 1, 'o': 1, 'p': 3, 'q': 10, 'r': 1, 's': 1, 't': 1, 'u': 1, 'v': 4, 'w': 4, 'x': 8, 'y': 4, 'z': 10
@@ -205,7 +204,7 @@ def isValidWord(word, hand, wordlist):
 #
 # Problem #4: Playing a hand
 #
-def playHand(hand, wordlist):
+def playHand(hand, wordlist, HAND_SIZE):
     """
     Permite al usuario jugar la mano dada, como sigue:
 
@@ -244,19 +243,24 @@ def playHand(hand, wordlist):
         valid = isValidWord(word, hand, wordlist)
         while not valid: # Si la palabra no es valida, volverá a pedirla
             word = input("Lo siento, la palabra que ingresaste no es valida. Prueba con otra palabra: ").lower()
+            if word == '.':
+                break
             valid = isValidWord(word, hand, wordlist)
-        points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
-        total = points + total # Lleva el conteo total
-        print("Puntos por palabra:", points,"puntos. Total:", total," puntos.")
-        hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
-        print("Partida actual:",displayHand(hand))
-        word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+        if word == '.':
+            break
+        else:
+            points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
+            total = points + total # Lleva el conteo total
+            print("Puntos por palabra:", points,"puntos. Total:", total," puntos.")
+            hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
+            print("Partida actual:",displayHand(hand))
+            word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
     print("Score final:", total)
 
 #
 # Problem #5: Playing a game
 #
-def play_game(word_list):
+def playGame(wordlist):
     """
     Permite al usuario jugar una n cantidad de
 
@@ -271,25 +275,26 @@ def play_game(word_list):
 
     * Si el usuario elige cualquier otra opcion, debe volver a pregunta.
     """
-    # TO DO ...
-    print("play_game not implemented.")         # delete this once you've completed Problem #4
-    play_hand(deal_hand(HAND_SIZE), word_list)  # delete this once you've completed Problem #4
+    HAND_SIZE = input("Elige cuantas letras quieres para la partida: ")
+    while not HAND_SIZE.isdigit(): # Para verificar que sea siempre numeros
+        HAND_SIZE = input("Sólo se aceptan números enteros. Elige cuantas letras quieres para la partida: ")
+    HAND_SIZE = int(HAND_SIZE) # Para pasar de string a entero
 
-    ## uncomment the following block of code once you've completed Problem #4
-#    hand = deal_hand(HAND_SIZE) # random init
-#    while True:
-#        cmd = raw_input('Enter n to deal a new hand, r to replay the last hand, or e to end game: ')
-#        if cmd == 'n':
-#            hand = deal_hand(HAND_SIZE)
-#            play_hand(hand.copy(), word_list)
-#            print
-#        elif cmd == 'r':
-#            play_hand(hand.copy(), word_list)
-#            print
-#        elif cmd == 'e':
-#            break
-#        else:
-#            print "Invalid command."
+   # Mientras se cumpla alguna de las siguientes
+    while True:
+        cmd = input("Ingresa 'n' para jugar una nueva partida, 'r' para repetir la partida anterior y 'e' para salir: ").lower()
+        if cmd == 'n' :
+            hand = dealHand(HAND_SIZE)
+            handOrg = hand.copy() # De esta manera se almacena la partida creada en este juego
+            playHand(hand, wordlist, HAND_SIZE)
+            print()
+        elif cmd == 'r':
+            playHand(handOrg, wordlist, HAND_SIZE)
+            print()
+        elif cmd == 'e':
+            break
+        else:
+            print("Invalid command.")
 
 #
 # Build data structures used for entire session and play game
