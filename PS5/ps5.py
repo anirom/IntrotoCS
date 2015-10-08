@@ -2,7 +2,7 @@
 # MIT OpenCourseWare
 # Wordgames
 
-# Es un juego como Scrabble
+# Juego de palabras parecido al Scrabble
 
 import string
 import random
@@ -17,28 +17,27 @@ SCRABBLE_LETTER_VALUES = {
 
 WORDLIST_FILENAME = "words.txt"
 
-def load_words():
+def loadWords():
     """
-    Regresa todas las palabras válidas que se usarán para el juego,
+    Regresa todas las palabras válidas que se usarán para la partida,
     todas conformadas por letras minúsculas.
 
     El archivo words.txt es el que contiene las palabras validas.
     """
-    print("Loading word list from file...")
+
     # inFile: file
     inFile = open(WORDLIST_FILENAME, 'r')
     # wordlist: list of strings
     wordlist = []
     for line in inFile:
         wordlist.append(line.strip().lower())
-    print("  ", len(wordlist), "words loaded.")
     return wordlist
 
-def get_frequency_dict(sequence):
+def getFrequencyDict(sequence):
     """
-    Regresa un diccionario donde las claves son elementos de la secuencia
-    y los valores son los recuentos, por el numer de veces que un elemento
-    es repetido en la secuencia.
+    Regresa un diccionario donde las claves son letras de la partida
+    y los valores son los recuentos, el numero de veces que un elemento
+    es repetido en la partida.
 
     sequence: string or list
     return: dictionary
@@ -52,7 +51,8 @@ def get_frequency_dict(sequence):
 #
 # Problem #1: Scoring a word
 #
-def get_word_score(word, n):
+
+def getWordScore(word, n):
     """
     Regresa el score para cada palabra, asumiendo que la palabra es valida.
 
@@ -65,17 +65,26 @@ def get_word_score(word, n):
     word: string (lowercase letters)
     returns: int >= 0
     """
-    # TO DO ...
 
-#
-# Make sure you understand how this function works and what it does!
-#
-def display_hand(hand):
+    total = 0
+
+    # Hace la comparación del string recibido con el diccionario de valores para obtener el total.
+    for key in word:
+        if key in SCRABBLE_LETTER_VALUES:
+            value = SCRABBLE_LETTER_VALUES[key]
+
+        total = total + value
+
+    if len(word) == n:
+        total += 50
+    return total
+
+def displayHand(hand):
     """
     Muestra las letras disponibles en la jugada.
 
     Por ejemplo:
-       display_hand({'a':1, 'x':2, 'l':3, 'e':1})
+       displayHand({'a':1, 'x':2, 'l':3, 'e':1})
     Debería imprimir algo como:
        a x x l l l e
     El orden de las palabras no es importante.
@@ -87,10 +96,7 @@ def display_hand(hand):
             print(letter,)              # print all on the same line
     print()                             # print an empty line
 
-#
-# Make sure you understand how this function works and what it does!
-#
-def deal_hand(n):
+def dealHand(n):
     """
     Regresa, de forma random, la 'n' cantidad de letras, en minúsculas.
     Al menos n/3 letras deben ser vocales.
@@ -103,7 +109,7 @@ def deal_hand(n):
     returns: dictionary (string -> int)
     """
     hand = {}
-    num_vowels = n / 3
+    num_vowels = round(n / 3)
 
     for i in range(num_vowels):
         x = VOWELS[random.randrange(0,len(VOWELS))]
@@ -126,9 +132,9 @@ def update_hand(hand, word):
     de esa letra en ella.
 
     Actualiza la jugada: Utiliza las letras de la palabra dada y regresa
-    una nueva jugada, sin las mismas letras.
+    las letras restantes de esa jugada.
 
-    No hay efectos secundarios: no cambia la jugada.
+    No hay efectos secundarios: no cambian las letras.
 
     word: string
     hand: dictionary (string -> int)
@@ -231,5 +237,5 @@ def play_game(word_list):
 # Build data structures used for entire session and play game
 #
 if __name__ == '__main__':
-    word_list = load_words()
+    word_list = loadWords()
     play_game(word_list)
