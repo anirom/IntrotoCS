@@ -66,9 +66,51 @@ def testGetFrequencyDict():
 
     if failure: print("SUCCESS: testGetFrequencyDict()")
 
+# ----------------------------------------- Test IS Valid Word -----------------------------------------
+
+def testIsValidWord(wordlist):
+    """
+    Unit test for isValidWord
+    """
+    #
+    # Test para probar la busqueda de la palabra, ingresando letra por letra.
+    #
+
+    finalword = []
+    failure = False
+
+    # Test 1
+    word = "killer"
+    for letter in word:
+        finalword.append(letter)
+        fw = ''.join(finalword)
+        valid = isValidWord(fw, wordlist)
+
+    if valid:
+        failure = True
+    else:
+        print("FAILURE (Test 1): testgetIsValidWord()")
+        print("\tSe esperaba un valor True, y se obtuvo", valid)
+
+    # Test 2
+    word = "jumbo"
+    for letter in word:
+        finalword.append(letter)
+        fw = ''.join(finalword)
+        valid = isValidWord(fw, wordlist)
+
+    if not valid:
+        failure = True
+    else:
+        print("FAILURE (Test 2): testgetIsValidWord()")
+        print("\tSe esperaba un valor False, y se obtuvo", valid)
+
+    if failure: print("SUCCESS: testIsValidWord()")
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 wordlist = loadWords()
 
 testLoadWords(wordlist)
 testGetFrequencyDict()
+testIsValidWord(wordlist)
