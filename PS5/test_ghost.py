@@ -23,50 +23,7 @@ def testLoadWords(wordlist):
     else:
         print("Failed Loading List")
 
-# ----------------------------------------- Test Get Frequency -----------------------------------------
-
-def testGetFrequencyDict():
-    """
-    Unit test for getFrequencyDict
-    """
-    #
-    # Test para verificar que devuelve un diccionario con las letras y el numero de repeticiones de estas.
-    #
-    words = ["ghost", "skills", "trumpet"]
-    failure = False
-
-    # Test 1
-    lovers = {'g': 1, 'h': 1, 'o': 1, 's': 1, 't': 1}
-    frequency = getFrequencyDict(words[0])
-    if lovers == frequency:
-        failure = True
-    else:
-        print("FAILURE (Test 1): testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
-
-    # Test 2
-
-    hello = {'s': 2, 'k': 1, 'i': 1, 'l': 2}
-    frequency = getFrequencyDict(words[1])
-    if hello == frequency:
-        failure = True
-    else:
-        print("FAILURE (Test 2): testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
-
-    # Test 3
-
-    luffing = {'t': 2, 'r': 1, 'u': 1, 'm': 1, 'p': 1, 'e': 1}
-    frequency = getFrequencyDict(words[2])
-    if luffing == frequency:
-        failure = True
-    else:
-        print("FAILURE (Test 3): testgetFrequencyDict()")
-        print("\tSe esperaba", lovers, "y se obtuvo", frequency)
-
-    if failure: print("SUCCESS: testGetFrequencyDict()")
-
-# ----------------------------------------- Test IS Valid Word -----------------------------------------
+# ----------------------------------------- Test Is Valid Word -----------------------------------------
 
 def testIsValidWord(wordlist):
     """
@@ -76,10 +33,10 @@ def testIsValidWord(wordlist):
     # Test para probar la busqueda de la palabra, ingresando letra por letra.
     #
 
-    finalword = []
     failure = False
 
     # Test 1
+    finalword = []
     word = "killer"
     for letter in word:
         finalword.append(letter)
@@ -89,11 +46,12 @@ def testIsValidWord(wordlist):
     if valid:
         failure = True
     else:
-        print("FAILURE (Test 1): testgetIsValidWord()")
+        print("FAILURE (Test 1): testIsValidWord()")
         print("\tSe esperaba un valor True, y se obtuvo", valid)
 
     # Test 2
-    word = "jumbo"
+    finalword = []
+    word = "seda"
     for letter in word:
         finalword.append(letter)
         fw = ''.join(finalword)
@@ -102,15 +60,37 @@ def testIsValidWord(wordlist):
     if not valid:
         failure = True
     else:
-        print("FAILURE (Test 2): testgetIsValidWord()")
+        print("FAILURE (Test 2): testIsValidWord()")
         print("\tSe esperaba un valor False, y se obtuvo", valid)
 
     if failure: print("SUCCESS: testIsValidWord()")
+
+# ----------------------------------------- Test Counter Ghost -----------------------------------------
+
+def testCounterGhost():
+    """
+    Unit test for counterGhost
+    """
+    #
+    # Test para ir almacenando la palabra 'ghost' cuando un jugador pierde alguna partida
+    #
+
+    player = ''
+
+    while player != 'ghost':
+        player = counterGhost(player)
+
+    if player == 'ghost' and type(player) == str:
+        print("SUCCESS: testCounterGhost()")
+    else:
+        print("FAILURE: testCounterGhost()")
+        print("\tSe esperaba el string 'ghost', y se obtuvo un", type(player),"con valor", player)
 
 # ----------------------------------------- Running Test -----------------------------------------
 
 wordlist = loadWords()
 
 testLoadWords(wordlist)
-testGetFrequencyDict()
 testIsValidWord(wordlist)
+testCounterGhost()
+

@@ -3,6 +3,7 @@
 # Wordgames: Ghost
 
 import random
+import string
 
 ##
 # En este juego participan dos jugadores, cada uno toma turno para escribir una letra de un fragmento de una
@@ -29,22 +30,6 @@ def loadWords():
         wordlist.append(line.strip().lower())
     return wordlist
 
-def getFrequencyDict(sequence):
-    """
-    Regresa un diccionario donde las claves son letras de la partida
-    y los valores son los recuentos, el numero de veces que un elemento
-    es repetido en la partida.
-
-    sequence: string or list
-    return: dictionary
-    """
-
-    # freqs: dictionary (element_type -> int)
-    freq = {}
-    for x in sequence:
-        freq[x] = freq.get(x,0) + 1
-    return freq
-
 def isValidWord(word, wordlist):
     """
     Regresa True si se tiene una palabra valida, y False si no lo es.
@@ -54,33 +39,71 @@ def isValidWord(word, wordlist):
     low = 0
     high = len(wordlist)-1
 
-    # Mediante busqueda binaria trata de acercarse a la palabra que se está buscando y con el método .find()
-    # asegura que la palabra sea la misma
+    # Mediante busqueda binaria trata de acercarse a la palabra que se está buscando
 
     while low <= high and not found:
         middle = (low + high)//2
         if wordlist[middle] < word:
             possibleword = wordlist[middle]
             low = middle + 1
-            # print(wordlist[middle])
-            if possibleword.find(word) != -1:    # De esta manera confirma que la palabra posible
-                # print("Está la palabra",word)  # tenga al menos los caracteres del fragmento
-                found = True
-                break
+            # Si es mayor a 3, verificará que la palabra sea la misma, si no,
+            # que simplemente se encuentre esa letra en las palabras con las que hace match.
+
+            if len(word) > 3:
+                if possibleword == word:
+                    # print("Está la palabra",word)
+                    found = True
+            else:
+                if possibleword.find(word) != -1:
+                    # print("Está la palabra",word)
+                    found = True
+                    break
 
         else:   # wordlist[middle] > word
             possibleword = wordlist[middle]
             high = middle - 1
-            # print(wordlist[middle])
-            if possibleword.find(word) != -1:
-                # print("Está la palabra",word)
-                found = True
-                break
+            # Si es mayor a 3, verificará que la palabra sea la misma, si no,
+            # que simplemente se encuentre esa letra en las palabras con las que hace match.
+
+            if len(word) > 3:
+                if possibleword == word:
+                    # print("Está la palabra",word)
+                    found = True
+            else:
+                if possibleword.find(word) != -1:
+                    # print("Está la palabra",word)
+                    found = True
+                    break
 
     if not found:
         return found
     else:
         return found
+
+def counterGhost(ghostword):
+    """
+    Va devolviendo los caracteres de la palabra 'ghost' cada vez que alguien pierde una partida.
+    """
+
+    ghostword = [ghostword]
+
+    if ghostword == ['']:
+        ghostword.append('g')
+        gw = ''.join(ghostword)
+    elif ghostword == ['g']:
+        ghostword.append('h')
+        gw = ''.join(ghostword)
+    elif ghostword == ['gh']:
+        ghostword.append('o')
+        gw = ''.join(ghostword)
+    elif ghostword == ['gho']:
+        ghostword.append('s')
+        gw = ''.join(ghostword)
+    elif ghostword == ['ghos']:
+        ghostword.append('t')
+        gw = ''.join(ghostword)
+
+    return gw
 
 if __name__ == '__main__':
     wordlist = loadWords()
