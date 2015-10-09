@@ -4,7 +4,6 @@
 
 from ps5 import *
 
-
 #
 # Test code
 #
@@ -24,7 +23,6 @@ def testLoadWords():
         print(" ", len(wordlist), "words loaded.")
     else:
         print("Failed Loading List")
-
 
 # ----------------------------------------- Test Get Word Score -----------------------------------------
 
@@ -48,7 +46,6 @@ def testGetWordScore():
             failure = True
 
     if not failure: print("SUCCESS: testGetWordScore()")
-
 
 # ----------------------------------------- Test Get Frequency -----------------------------------------
 
@@ -119,7 +116,6 @@ def testDisplayHand():
         print("FAILURE: testDisplayHand()")
         print("\tNo se está obteniendo una lista de regreso")
 
-
 # ----------------------------------------- Test Deal Hand -----------------------------------------
 
 def testDealHand():
@@ -146,7 +142,6 @@ def testDealHand():
         print("\tHubo una repetición de", repeats, ",para una jugada de", HAND_SIZE, "letras.")
     else:
         print("SUCCESS: testDealHand()")
-
 
 # ----------------------------------------- Test Update Hand -----------------------------------------
 
@@ -196,7 +191,6 @@ def testUpdateHand():
         failure = True
 
     if failure: print("SUCCESS: testUpdateHand()")
-
 
 # ----------------------------------------- Test Is Valid Word -----------------------------------------
 
