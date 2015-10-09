@@ -4,7 +4,6 @@
 
 # Juego de palabras parecido al Scrabble
 
-import string
 import random
 
 VOWELS = 'aeiou'
