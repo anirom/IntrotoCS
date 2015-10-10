@@ -86,6 +86,56 @@ def testCounterGhost():
         print("FAILURE: testCounterGhost()")
         print("\tSe esperaba el string 'ghost', y se obtuvo un", type(player),"con valor", player)
 
+# ----------------------------------------- Test Play Hand -----------------------------------------
+
+def testPlayHand(wordlist):
+    """
+    Unit test for playHand
+    """
+    #
+    # Test para jugar una partida, es decir, completar una palabra
+    #
+
+    failure = False
+
+    # Test 1
+    # Test para la palabra KILL, en este caso debería perder el jugador 2
+    lost, player = playHand(wordlist)
+    if lost == True and player == 2:
+        failure = True
+    else:
+        print("FAILURE (Test 1): testPlayHand()")
+        print("\tSe esperaba que el jugador 2 haya perdido y se obtuvo que el jugador", player, "fue el que perdió")
+
+    # Test 2
+    # Test para la palabra PEAFA, en este caso debería perder el jugador 2
+    lost, player = playHand(wordlist)
+    if lost == True and player == 1:
+        failure = True
+    else:
+        print("FAILURE (Test 2): testPlayHand()")
+        print("\tSe esperaba que el jugador 1 haya perdido y se obtuvo que el jugador", player, "fue el que perdió")
+
+    # Test 3
+    # Test para la palabra PEAFOWL, en este caso debería perder el jugador 2
+    lost, player = playHand(wordlist)
+    if lost == True and player == 1:
+        failure = True
+    else:
+        print("FAILURE (Test 3): testPlayHand()")
+        print("\tSe esperaba que el jugador 1 haya perdido y se obtuvo que el jugador", player, "fue el que perdió")
+
+    # Test 4
+    # Test para la palabra PYTHON, en este caso debería perder el jugador 2
+    lost, player = playHand(wordlist)
+    if lost == True and player == 2:
+        failure = True
+    else:
+        print("FAILURE (Test 4): testPlayHand()")
+        print("\tSe esperaba que el jugador 2 haya perdido y se obtuvo que el jugador", player, "fue el que perdió")
+
+    if failure: print("SUCCESS: testIsValidWord()")
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 wordlist = loadWords()
@@ -93,4 +143,4 @@ wordlist = loadWords()
 testLoadWords(wordlist)
 testIsValidWord(wordlist)
 testCounterGhost()
-
+testPlayHand(wordlist)

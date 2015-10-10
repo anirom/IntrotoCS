@@ -38,6 +38,7 @@ def isValidWord(word, wordlist):
     found = False
     low = 0
     high = len(wordlist)-1
+    realword = ''
 
     # Mediante busqueda binaria trata de acercarse a la palabra que se está buscando
 
@@ -50,9 +51,11 @@ def isValidWord(word, wordlist):
             # que simplemente se encuentre esa letra en las palabras con las que hace match.
 
             if len(word) > 3:
-                if possibleword == word:
-                    # print("Está la palabra",word)
-                    found = True
+                if possibleword.find(word) != -1:
+                    realword = possibleword
+                    if possibleword == word:
+                        # print("Está la palabra",word)
+                        found = True
             else:
                 if possibleword.find(word) != -1:
                     # print("Está la palabra",word)
@@ -66,9 +69,11 @@ def isValidWord(word, wordlist):
             # que simplemente se encuentre esa letra en las palabras con las que hace match.
 
             if len(word) > 3:
-                if possibleword == word:
-                    # print("Está la palabra",word)
-                    found = True
+                if possibleword.find(word) != -1:
+                    realword = possibleword
+                    if possibleword == word:
+                        # print("Está la palabra",word)
+                        found = True
             else:
                 if possibleword.find(word) != -1:
                     # print("Está la palabra",word)
@@ -76,9 +81,9 @@ def isValidWord(word, wordlist):
                     break
 
     if not found:
-        return found
+        return found, realword
     else:
-        return found
+        return found, realword
 
 def counterGhost(ghostword):
     """
@@ -104,6 +109,78 @@ def counterGhost(ghostword):
         gw = ''.join(ghostword)
 
     return gw
+
+def playHand(wordlist):
+    """
+    Esta función permite jugar una partida y regresa un valor verdadero cuando se ha perdido
+    """
+    finalword = []
+    fw = ''
+    possibleword = ''
+    lost = False
+    valid = True
+    player1 = False
+
+    while True:
+        if valid and len(fw) <= 3:
+            if not player1:
+                player = 1
+                print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
+                print("\033[1;34mPalabra actual ->\033[1;m", fw.upper())
+                word = input("Ingrese una letra: ").lower()
+                while not word.isalpha() or len(word) >= 2:
+                        word = input("Ingrese una letra: ").lower()
+                finalword.append(word)
+                fw = ''.join(finalword)
+                valid, possibleword = isValidWord(fw, wordlist)
+                player1 = True
+            else:
+                player = 2
+                print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
+                print("\033[1;34mPalabra actual:\033[1;m", fw.upper())
+                word = input("Ingrese una letra: ").lower()
+                while not word.isalpha() or len(word) >= 2:
+                        word = input("Ingrese una letra: ").lower()
+                finalword.append(word)
+                fw = ''.join(finalword)
+                valid, possibleword = isValidWord(fw, wordlist)
+                player1 = False
+
+        elif valid and len(fw) > 3:
+            print("\033[1;31mEl jugador \033[1;32m{}\033[1;m \033[1;31mha perdido con la palabra \033[1;34m{}\033[1;m\033[1;m".format(player, fw.upper()))
+            lost = True
+            break
+
+        elif not valid:
+            if possibleword.find(fw) != -1:
+                if not player1:
+                    player = 1
+                    print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
+                    print("\033[1;34mPalabra actual:\033[1;m", fw.upper())
+                    word = input("Ingrese una letra: ").lower()
+                    while not word.isalpha() or len(word) >= 2:
+                        word = input("Ingrese una letra: ").lower()
+                    finalword.append(word)
+                    fw = ''.join(finalword)
+                    valid, possibleword = isValidWord(fw, wordlist)
+                    player1 = True
+                else:
+                    player = 2
+                    print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
+                    print("\033[1;34mPalabra actual:\033[1;m", fw.upper())
+                    word = input("Ingrese una letra: ").lower()
+                    while not word.isalpha() or len(word) >= 2:
+                        word = input("Ingrese una letra: ").lower()
+                    finalword.append(word)
+                    fw = ''.join(finalword)
+                    valid, possibleword = isValidWord(fw, wordlist)
+                    player1 = False
+            else:
+                print("\033[1;31mEl jugador \033[1;32m{}\033[1;m \033[1;31mha perdido con la palabra \033[1;34m{}.\033[1;m\033[1;m".format(player, fw.upper()))
+                lost = True
+                break
+
+    return lost, player
 
 if __name__ == '__main__':
     wordlist = loadWords()
