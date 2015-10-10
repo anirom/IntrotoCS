@@ -136,6 +136,11 @@ def testPlayHand(wordlist):
 
     if failure: print("SUCCESS: testIsValidWord()")
 
+# ----------------------------------------- Test Play Game -----------------------------------------
+
+def testPlayGame(wordlist):
+    playGame(wordlist)
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 wordlist = loadWords()
@@ -143,4 +148,5 @@ wordlist = loadWords()
 testLoadWords(wordlist)
 testIsValidWord(wordlist)
 testCounterGhost()
-testPlayHand(wordlist)
+# testPlayHand(wordlist)
+testPlayGame(wordlist)

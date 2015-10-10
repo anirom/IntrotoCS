@@ -90,8 +90,10 @@ def counterGhost(ghostword):
     Va devolviendo los caracteres de la palabra 'ghost' cada vez que alguien pierde una partida.
     """
 
+    # Convierte el string recibido en una lista
     ghostword = [ghostword]
 
+    # Va a buscar el string para ir formando la palabra 'ghost'
     if ghostword == ['']:
         ghostword.append('g')
         gw = ''.join(ghostword)
@@ -121,14 +123,15 @@ def playHand(wordlist):
     valid = True
     player1 = False
 
+    # Lo va a realizar hasta que algún jugador pierda
     while True:
-        if valid and len(fw) <= 3:
-            if not player1:
+        if valid and len(fw) <= 3: # Va a validar que siempre que sea verdadero y menor a 3 siga preguntando por letras
+            if not player1: # Para ir pasando entre el jugador 1 y 2
                 player = 1
                 print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
                 print("\033[1;34mPalabra actual ->\033[1;m", fw.upper())
-                word = input("Ingrese una letra: ").lower()
-                while not word.isalpha() or len(word) >= 2:
+                word = input("Ingrese una letra: ").lower() # De esta manera lo convierte a minuscula
+                while not word.isalpha() or len(word) >= 2: # Verifica que solo sean letras y que no se introduzca más de una letra
                         word = input("Ingrese una letra: ").lower()
                 finalword.append(word)
                 fw = ''.join(finalword)
@@ -146,13 +149,13 @@ def playHand(wordlist):
                 valid, possibleword = isValidWord(fw, wordlist)
                 player1 = False
 
-        elif valid and len(fw) > 3:
+        elif valid and len(fw) > 3: # Una vez que es valido y es mayor a 3 se ha perdido el juego
             print("\033[1;31mEl jugador \033[1;32m{}\033[1;m \033[1;31mha perdido con la palabra \033[1;34m{}\033[1;m\033[1;m".format(player, fw.upper()))
             lost = True
             break
 
-        elif not valid:
-            if possibleword.find(fw) != -1:
+        elif not valid: # Si se tiene una palabra no valida
+            if possibleword.find(fw) != -1: # Verifica si el fragmento de palabra está en una palabra del diccionario
                 if not player1:
                     player = 1
                     print("Turno del Jugador \033[1;32m{}.\033[1;m".format(player))
@@ -175,14 +178,43 @@ def playHand(wordlist):
                     fw = ''.join(finalword)
                     valid, possibleword = isValidWord(fw, wordlist)
                     player1 = False
-            else:
+            else: # Si no está la palabra, entonces ha perdido el juego
                 print("\033[1;31mEl jugador \033[1;32m{}\033[1;m \033[1;31mha perdido con la palabra \033[1;34m{}.\033[1;m\033[1;m".format(player, fw.upper()))
                 lost = True
                 break
 
     return lost, player
 
+def playGame(wordlist):
+    """
+    Esta función es la que inicializa el juego
+    """
+
+    while True:
+        cmd = input("Ingresa 'n' para jugar una nueva partida o 'e' para salir: ").lower()
+        if cmd == 'n':
+            player1 = ''
+            player2 = ''
+            while player1 != 'ghost' and player2 != 'ghost': # Va a realizar el ciclo hasta que alguno de los jugadores
+                                                             # conforme la palabra 'ghost'
+                lost, player = playHand(wordlist)
+                if lost and player == 1:
+                    player1 = counterGhost(player1)
+                if lost and player == 2:
+                    player2 = counterGhost(player2)
+
+            if player1 == 'ghost': # Verifica si el jugador 1 o 2 es el que completo la palabra 'ghost'
+                print("EL JUGADOR\033[1;32m 2 \033[1;mHA GANADO EL JUEGO.")
+            else:
+                print("EL JUGADOR\033[1;32m 1 \033[1;mHA GANADO EL JUEGO.")
+
+        elif cmd == 'e':
+            break
+        else:
+            print("Comando invalido.")
+
+
 if __name__ == '__main__':
     wordlist = loadWords()
     print("\n\t****************** Ghost Game ******************")
-    #playGame(wordlist)
+    playGame(wordlist)
