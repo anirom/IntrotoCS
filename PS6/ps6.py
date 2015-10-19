@@ -233,37 +233,67 @@ def playHand(hand, wordlist, HAND_SIZE):
       word_list: list of lowercase strings
     """
     total = 0
+    playertotaltime = 0
+    points = 0
+    total = 0
+
+    playertime = input("Ingrese el tiempo límite para los jugadores (en segundos): ")
+    while not playertime.isdigit():
+        playertime = input("Ingrese el tiempo límite para los jugadores (en segundos): ")
+    playertime = int(playertime)
 
     # Se le muestra al usuario las letras de la jugada
     print("Partida actual:", displayHand(hand))
-    starttime = time.time()
+    strtime = time.time()
     word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
     endtime = time.time()
-    totaltime = endtime - starttime
-    print("El tiempo que tomó en ingresar la palabra fue de", totaltime, "segundos.")
+    totaltime = endtime - strtime
+    playertotaltime = playertime - totaltime
+    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
     while word != '.': # Se ejecutará siempre y cuando no se introduzca un punto
         while not word.isalpha(): # Para validar que siempre introduza letras
             word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
         valid = isValidWord(word, hand, wordlist)
         while not valid: # Si la palabra no es valida, volverá a pedirla
-            starttime = time.time()
-            word = input("Lo siento, la palabra que ingresaste no es valida. Prueba con otra palabra: ").lower()
-            endtime = time.time()
-            totaltime = endtime - starttime
-            print("El tiempo que tomó en ingresar la palabra fue de", totaltime, "segundos.")
+            if playertotaltime <= 0:
+                print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
+            else:
+                strtime = time.time()
+                word = input("Lo siento, la palabra que ingresaste no es valida. Prueba con otra palabra: ").lower()
+                endtime = time.time()
+                totaltime = endtime - strtime
+                playertotaltime = playertotaltime - totaltime
+                if playertotaltime <= 0:
+                    print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
+                    break
+                else:
+                    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
+
             if word == '.':
                 break
             valid = isValidWord(word, hand, wordlist)
         if word == '.':
             break
         else:
-            points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
-            total = points + total # Lleva el conteo total
-            print("Puntos por palabra:", points,"puntos. Total:", total," puntos.")
-            hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
-            print("Partida actual:",displayHand(hand))
-            word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
-    print("Score final:", total)
+            if playertotaltime <= 0:
+                break
+            else:
+                points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
+                total = points + total # Lleva el conteo total
+                print("Puntos por palabra:", points,"puntos. Total:", total,"puntos.")
+                hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
+                print("Partida actual:",displayHand(hand))
+                strtime = time.time()
+                word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+                endtime = time.time()
+                totaltime = endtime - strtime
+                playertotaltime = playertotaltime - totaltime
+                if playertotaltime <= 0:
+                    print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
+                    break
+                else:
+                    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
+    print("Score final:", total, "puntos. Tiempo de respuesta mayor a", playertime, "segundos.")
 
 #
 # Problem #5: Playing a game
