@@ -10,14 +10,13 @@ from ps5 import *
 
 # ----------------------------------------- Test Load Words -----------------------------------------
 
-def testLoadWords():
+def testLoadWords(wordlist):
     """
     Unit test for loadWords
     """
     #
     # Verificando que cargue correctamente la lista de palabras validas.
     #
-    wordlist = loadWords()
     if type(wordlist) is list:
         print("Loading words...")
         print(" ", len(wordlist), "words loaded.")
@@ -271,7 +270,7 @@ def testPlayGame(wordlist):
 
 wordlist = loadWords()
 
-testLoadWords()
+testLoadWords(wordlist)
 testGetWordScore()
 testGetFrequencyDict()
 testDisplayHand()

@@ -16,6 +16,8 @@ SCRABBLE_LETTER_VALUES = {
 
 WORDLIST_FILENAME = "words.txt"
 
+pointsdict = {}
+
 def loadWords():
     """
     Regresa todas las palabras válidas que se usarán para la partida,
@@ -47,10 +49,6 @@ def getFrequencyDict(sequence):
     for x in sequence:
         freq[x] = freq.get(x,0) + 1
     return freq
-
-#
-# Problem #1: Scoring a word
-#
 
 def getWordScore(word, n):
     """
@@ -127,9 +125,6 @@ def dealHand(n):
         hand[x] = hand.get(x, 0) + 1
     return hand
 
-#
-# Problem #2: Update a hand by removing letters
-#
 def updateHand(hand, word):
     """
     Asumimos que la jugada tiene todas las letras que conforman la palabra.
@@ -154,9 +149,6 @@ def updateHand(hand, word):
 
     return hand
 
-#
-# Problem #3: Test word validity
-#
 def isValidWord(word, hand, wordlist):
     """
     Regresa verdadero si la palabra está en la lista y está
@@ -201,9 +193,24 @@ def isValidWord(word, hand, wordlist):
     else:
         return found
 
-#
-# Problem #4: Playing a hand
-#
+def pickBestWord(hand, pointsdict):
+    """
+    Regresa el valor más alto de la palabra que se puede obtener con las letras dadas.
+
+    Regresa '.' si no se puede formar una palabra con la mano dada.
+    """
+
+def getWordsToPoints(wordlist, n):
+    """
+    Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
+    """
+
+    for word in wordlist:
+        score = getWordScore(word, n)
+        pointsdict.update({word:score})
+
+    return pointsdict
+
 def playHand(hand, wordlist, HAND_SIZE):
     """
     Permite al usuario jugar la mano dada, como sigue:
@@ -295,9 +302,6 @@ def playHand(hand, wordlist, HAND_SIZE):
                     print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
     print("Score final:", total, "puntos. Tiempo de respuesta mayor a", playertime, "segundos.")
 
-#
-# Problem #5: Playing a game
-#
 def playGame(wordlist):
     """
     Permite al usuario jugar una n cantidad de
@@ -338,9 +342,6 @@ def playGame(wordlist):
         else:
             print("Comando invalido.")
 
-#
-# Build data structures used for entire session and play game
-#
 if __name__ == '__main__':
     wordlist = loadWords()
     print("\n\t****************** Words Game ******************")
