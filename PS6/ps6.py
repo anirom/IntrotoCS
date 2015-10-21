@@ -17,6 +17,7 @@ SCRABBLE_LETTER_VALUES = {
 WORDLIST_FILENAME = "words.txt"
 
 pointsdict = {}
+probablewordlist = []
 
 def loadWords():
     """
@@ -149,7 +150,7 @@ def updateHand(hand, word):
 
     return hand
 
-def isValidWord(word, hand, wordlist):
+def isValidWord(word, hand, pointsdict):
     """
     Regresa verdadero si la palabra está en la lista y está
     compuesta por las letras que se tienen en la jugada.
@@ -157,41 +158,17 @@ def isValidWord(word, hand, wordlist):
     No hay que cambiar ni la jugada o la lista de palabras.
 
     word: string
-    hand: dictionary (string -> int)
-    word_list: list of lowercase strings
+    hand: string
+    pointsdict: dictionary of words
     """
 
-    valid = False
-    found = False
-    low = 0
-    high = len(wordlist)-1
+    # Convierte el objeto set hand a un string para poder usar la función find.
+    hand = ''.join(hand)
 
-    # Primero se verifica que la palabra esté compuesta por las letras dadas en la jugada
-    for letter in word:
-        if letter in hand and hand[letter] >= 1:
-            valid = True
-        else:
-            return False
-
-    # Una vez verificada que la palabra esté conformada con las letras de la jugada,
-    # se hará la busqueda de la palabra dada en la ista de las palabras validas
-    # mediante una busqueda binaria
-    if valid == True:
-        while low <= high and not found:
-            middle = (low + high)//2
-            if wordlist[middle] < word:
-                low = middle + 1
-                # print(wordlist[middle])
-            elif wordlist[middle] > word:
-                high = middle - 1
-                # print(wordlist[middle])
-            else:
-                found = True
-
-    if not found:
-        return found
+    if pointsdict[word] and hand.find(word):
+        return True
     else:
-        return found
+        return False
 
 def pickBestWord(hand, pointsdict):
     """
@@ -205,6 +182,7 @@ def getWordsToPoints(wordlist, n):
     Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
     """
 
+    # Busca cada palabra en la wordlist, obtiene su score y lo almacena en el diccionario pointsdict
     for word in wordlist:
         score = getWordScore(word, n)
         pointsdict.update({word:score})
@@ -317,11 +295,14 @@ def playGame(wordlist):
 
     * Si el usuario elige cualquier otra opcion, debe volver a pregunta.
     """
+
     HAND_SIZE = input("Elige cuantas letras quieres para la partida: ")
     while not HAND_SIZE.isdigit(): # Para verificar que sea siempre numeros
         HAND_SIZE = input("Sólo se aceptan números enteros. Elige cuantas letras quieres para la partida: ")
     HAND_SIZE = int(HAND_SIZE) # Para pasar de string a entero
+    pointsdict = getWordsToPoints(wordlist, HAND_SIZE)
     handOrg = None
+
 
    # Mientras se cumpla alguna de las siguientes
     while True:
@@ -329,7 +310,7 @@ def playGame(wordlist):
         if cmd == 'n' :
             hand = dealHand(HAND_SIZE)
             handOrg = hand.copy() # De esta manera se almacena la partida creada en este juego
-            playHand(hand, wordlist, HAND_SIZE)
+            playHand(hand, wordlist, HAND_SIZE, pointsdict)
             print()
         elif cmd == 'r':
             if handOrg == None:
