@@ -17,6 +17,7 @@ SCRABBLE_LETTER_VALUES = {
 WORDLIST_FILENAME = "words.txt"
 
 pointsdict = {}
+probablewordlist = []
 
 def loadWords():
     """
@@ -158,8 +159,8 @@ def isValidWord(word, hand, pointsdict):
 
     word: string
     pointsdict: dictionary of words
-
     """
+
     valid = False
     modhand = hand.copy()
 
@@ -216,6 +217,7 @@ def getWordsToPoints(wordlist, n):
     """
 
     # Toma cada palabra en la lista y forma un diccionario con la palabra y sus puntos equivalentes
+
     for word in wordlist:
         score = getWordScore(word, n)
         pointsdict.update({word:score})
@@ -328,11 +330,14 @@ def playGame(wordlist):
 
     * Si el usuario elige cualquier otra opcion, debe volver a pregunta.
     """
+
     HAND_SIZE = input("Elige cuantas letras quieres para la partida: ")
     while not HAND_SIZE.isdigit(): # Para verificar que sea siempre numeros
         HAND_SIZE = input("Sólo se aceptan números enteros. Elige cuantas letras quieres para la partida: ")
     HAND_SIZE = int(HAND_SIZE) # Para pasar de string a entero
+    pointsdict = getWordsToPoints(wordlist, HAND_SIZE)
     handOrg = None
+
 
    # Mientras se cumpla alguna de las siguientes
     while True:
@@ -340,7 +345,7 @@ def playGame(wordlist):
         if cmd == 'n' :
             hand = dealHand(HAND_SIZE)
             handOrg = hand.copy() # De esta manera se almacena la partida creada en este juego
-            playHand(hand, wordlist, HAND_SIZE)
+            playHand(hand, wordlist, HAND_SIZE, pointsdict)
             print()
         elif cmd == 'r':
             if handOrg == None:

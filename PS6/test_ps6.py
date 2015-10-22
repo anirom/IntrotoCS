@@ -10,7 +10,6 @@ import time
 #
 
 # ----------------------------------------- Test Get Words To Points -----------------------------------------
-
 def testGetWordsToPoints(pointsdict, total):
     """
     Unit test for getWordsToPoints
