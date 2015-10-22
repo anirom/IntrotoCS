@@ -149,7 +149,7 @@ def updateHand(hand, word):
 
     return hand
 
-def isValidWord(word, hand, wordlist):
+def isValidWord(word, hand, pointsdict):
     """
     Regresa verdadero si la palabra está en la lista y está
     compuesta por las letras que se tienen en la jugada.
@@ -157,54 +157,65 @@ def isValidWord(word, hand, wordlist):
     No hay que cambiar ni la jugada o la lista de palabras.
 
     word: string
-    hand: dictionary (string -> int)
-    word_list: list of lowercase strings
+    pointsdict: dictionary of words
+
     """
-
     valid = False
-    found = False
-    low = 0
-    high = len(wordlist)-1
+    modhand = hand.copy()
 
-    # Primero se verifica que la palabra esté compuesta por las letras dadas en la jugada
+    # Como se recibe un diccionario se utilza para buscar la palabra.
     for letter in word:
-        if letter in hand and hand[letter] >= 1:
+        if letter in hand and modhand[letter] >= 1:
+            value = modhand[letter] - 1
+            modhand[letter] = value
             valid = True
         else:
+            modhand = hand
             return False
 
-    # Una vez verificada que la palabra esté conformada con las letras de la jugada,
-    # se hará la busqueda de la palabra dada en la ista de las palabras validas
-    # mediante una busqueda binaria
-    if valid == True:
-        while low <= high and not found:
-            middle = (low + high)//2
-            if wordlist[middle] < word:
-                low = middle + 1
-                # print(wordlist[middle])
-            elif wordlist[middle] > word:
-                high = middle - 1
-                # print(wordlist[middle])
-            else:
-                found = True
-
-    if not found:
-        return found
-    else:
-        return found
+    if valid:
+        worddict = pointsdict.get(word, None)
+        if worddict is None:
+            return False
+        else:
+            return True
 
 def pickBestWord(hand, pointsdict):
     """
-    Regresa el valor más alto de la palabra que se puede obtener con las letras dadas.
+    Regresa la palabra con el valor más alto que se puede obtener con las letras dadas.
 
     Regresa '.' si no se puede formar una palabra con la mano dada.
+
+    hand: dictionary (string -> int)
+    pointsdict: dictionary (string -> int)
+
+    La complejidad de este algoritmo es de O(n) (lineal)
     """
+
+    bestwordvalue = 0
+
+    # Va a revisar para
+    for word in pointsdict:
+        valid = isValidWord(word, hand, pointsdict)
+        if valid:
+            wordvalue = pointsdict[word]
+            if wordvalue > bestwordvalue:
+                bestwordvalue = pointsdict[word]
+                bestword = word
+                # print(bestword, bestwordvalue)
+
+    if bestwordvalue > 0:
+        # print(bestword, bestwordvalue)
+        return bestword, bestwordvalue
+
+    return '.'
 
 def getWordsToPoints(wordlist, n):
     """
     Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
     """
 
+    # Toma cada palabra en la lista y forma un diccionario con la palabra y sus puntos equivalentes
     for word in wordlist:
         score = getWordScore(word, n)
         pointsdict.update({word:score})
