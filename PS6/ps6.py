@@ -6,6 +6,7 @@
 
 import random
 import time
+from itertools import permutations
 
 VOWELS = 'aeiou'
 CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
@@ -17,7 +18,8 @@ SCRABBLE_LETTER_VALUES = {
 WORDLIST_FILENAME = "words.txt"
 
 pointsdict = {}
-probablewordlist = []
+possibleword = {}
+timelimit = 0
 
 def loadWords():
     """
@@ -171,7 +173,6 @@ def isValidWord(word, hand, pointsdict):
             modhand[letter] = value
             valid = True
         else:
-            modhand = hand
             return False
 
     if valid:
@@ -180,6 +181,72 @@ def isValidWord(word, hand, pointsdict):
             return False
         else:
             return True
+
+def getWordsToPoints(wordlist, n):
+    """
+    Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
+    """
+
+    # Toma cada palabra en la lista y forma un diccionario con la palabra y sus puntos equivalentes
+
+    for word in wordlist:
+        score = getWordScore(word, n)
+        pointsdict.update({word:score})
+
+    return pointsdict
+
+def getTimeLimit(pointsdict, k, HAND_SIZE):
+    """
+    Regresa el tiempo limite para el jugador como una función de k multiplicado.
+    """
+
+    starttime = time.time()
+    # Hace algunos calculos. El proposito es calcular cuanto tiempo le llevó a la computadora realizar la tarea.
+    for word in pointsdict:
+        getFrequencyDict(word)
+        getWordScore(word, HAND_SIZE)
+    endtime = time.time()
+    return (endtime - starttime) * k
+
+def getPossibleWord(hand):
+    """
+    Esta función toma el hand de letras y regresa una lista de palabras posibles.
+    """
+
+    finalhand = ''
+    pw = {}
+
+    for letter in hand.keys():
+        for j in range(hand[letter]):
+            finalhand = finalhand + letter
+
+    for L in range(2, len(finalhand)+1):
+        for subset in permutations(finalhand, L):
+            word = ''.join(subset)
+            # print(word)
+            pw.update({word: word})
+
+    return pw
+
+def pickBestWordFaster(hand, possibleword):
+
+    bestword = ''
+    bestwordvalue = 0
+
+    words = possibleword.values()
+    for word in words:
+        if word in pointsdict:
+            wordvalue = pointsdict[word]
+            if wordvalue > bestwordvalue:
+                # print(word)
+                bestwordvalue = pointsdict[word]
+                bestword = word
+
+    if bestwordvalue > 0:
+        # print(bestword, bestwordvalue)
+        return bestword, bestwordvalue
+
+    return '.'
 
 def pickBestWord(hand, pointsdict):
     """
@@ -211,109 +278,51 @@ def pickBestWord(hand, pointsdict):
 
     return '.'
 
-def getWordsToPoints(wordlist, n):
+def playHand(hand, HAND_SIZE, pointsdict):
     """
-    Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
-    """
-
-    # Toma cada palabra en la lista y forma un diccionario con la palabra y sus puntos equivalentes
-
-    for word in wordlist:
-        score = getWordScore(word, n)
-        pointsdict.update({word:score})
-
-    return pointsdict
-
-def playHand(hand, wordlist, HAND_SIZE):
-    """
-    Permite al usuario jugar la mano dada, como sigue:
-
-    * Se muestra la jugada.
-
-    * El usuario puede introducir una palabra.
-
-    * Una palabra invalida es rechazada y un mensaje aparece pidiéndole al
-      usuario otra palabra.
-
-    * Cuando se introduce una palabra valida, se usan las letras de la jugada.
-
-    * Después de cada palabra valida: el score de la palabra y el score total se
-      muestran, las letras restantes se muestran en la jugada y al usuario se le pide
-      otra palabra.
-
-    * La suma del score de la palabra se muestra cuando termina la jugada.
-
-    * La jugada termina cuando no haya mas letras sin usar.
-      El usuario puede terminar la partida ingresando el caracter '.'
-      en lugar de una palabra.
-
-    * Se muestra el marcador final.
-
-      hand: dictionary (string -> int)
-      word_list: list of lowercase strings
+    Permite al usuario jugar en modo computadora
     """
     total = 0
-    playertotaltime = 0
-    points = 0
-    total = 0
+    k = 1
 
-    playertime = input("Ingrese el tiempo límite para los jugadores (en segundos): ")
-    while not playertime.isdigit():
-        playertime = input("Ingrese el tiempo límite para los jugadores (en segundos): ")
-    playertime = int(playertime)
+    playertime = getTimeLimit(pointsdict, k, HAND_SIZE)
 
-    # Se le muestra al usuario las letras de la jugada
+    print("Tiempo limite para dar una respuesta:", playertime)
     print("Partida actual:", displayHand(hand))
+
+
+
     strtime = time.time()
-    word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
+    word = pickBestWord(hand, pointsdict) # Determina la mejor palabra con las letras dadas
     endtime = time.time()
     totaltime = endtime - strtime
     playertotaltime = playertime - totaltime
-    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
-    while word != '.': # Se ejecutará siempre y cuando no se introduzca un punto
-        while not word.isalpha(): # Para validar que siempre introduza letras
-            word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
-        valid = isValidWord(word, hand, wordlist)
-        while not valid: # Si la palabra no es valida, volverá a pedirla
-            if playertotaltime <= 0:
-                print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
-            else:
-                strtime = time.time()
-                word = input("Lo siento, la palabra que ingresaste no es valida. Prueba con otra palabra: ").lower()
-                endtime = time.time()
-                totaltime = endtime - strtime
-                playertotaltime = playertotaltime - totaltime
-                if playertotaltime <= 0:
-                    print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
-                    break
-                else:
-                    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
+    points = pointsdict[word[0]]
 
-            if word == '.':
-                break
-            valid = isValidWord(word, hand, wordlist)
-        if word == '.':
-            break
+    total = points + total  # Lleva el conteo total
+    print("La mejor palabra es:", word[0])
+    print("Puntos por palabra:", points, "puntos. Total:", total, "puntos.")
+    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
+
+    hand = updateHand(hand,word[0]) # Actualiza la partida con las letras que ya se utilizaron
+
+    while word[0] != '.': # Se ejecutará siempre y cuando no se introduzca un punto
+        print("Partida actual:", displayHand(hand))
+        strtime = time.time()
+        word = pickBestWord(hand, pointsdict)  # Determina la mejor palabra con las letras dadas
+        endtime = time.time()
+        totaltime = endtime - strtime
+        playertotaltime = playertotaltime - totaltime
+        if word[0] != '.' and playertotaltime < playertime:
+            print("La mejor palabra es:", word[0])
+            print("Puntos por palabra:", points, "puntos. Total:", total, "puntos.")
+            print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
+            hand = updateHand(hand, word[0])  # Actualiza la partida con las letras que ya se utilizaron
         else:
-            if playertotaltime <= 0:
-                break
-            else:
-                points = getWordScore(word,HAND_SIZE) # LLeva el conteo por palabra
-                total = points + total # Lleva el conteo total
-                print("Puntos por palabra:", points,"puntos. Total:", total,"puntos.")
-                hand = updateHand(hand,word) # Actualiza la partida con las letras que ya se utilizaron
-                print("Partida actual:",displayHand(hand))
-                strtime = time.time()
-                word = input("Introduzca una palabra o un punto (.) si desea finalizar la partida: ").lower()
-                endtime = time.time()
-                totaltime = endtime - strtime
-                playertotaltime = playertotaltime - totaltime
-                if playertotaltime <= 0:
-                    print("Tiempo de respuesta: {:.2f} segundos. Tu tiempo ha sobrepasado el tiempo limite.".format(totaltime))
-                    break
-                else:
-                    print("Tiempo de respuesta: {:.2f} segundos. Te quedan: {:.2f} segundos.".format(totaltime, playertotaltime))
-    print("Score final:", total, "puntos. Tiempo de respuesta mayor a", playertime, "segundos.")
+            print("Ya no hay más palabras.")
+            break
+
+    print("Score final:", total, "puntos. Tiempo que te quedó:",playertotaltime, "segundos.")
 
 def playGame(wordlist):
     """
@@ -345,13 +354,14 @@ def playGame(wordlist):
         if cmd == 'n' :
             hand = dealHand(HAND_SIZE)
             handOrg = hand.copy() # De esta manera se almacena la partida creada en este juego
-            playHand(hand, wordlist, HAND_SIZE, pointsdict)
+
+            playHand(hand, HAND_SIZE, pointsdict)
             print()
         elif cmd == 'r':
             if handOrg == None:
                 print("No se han iniciado partidas.")
             else:
-                playHand(handOrg, wordlist, HAND_SIZE)
+                playHand(handOrg, HAND_SIZE, pointsdict)
                 print()
         elif cmd == 'e':
             break
