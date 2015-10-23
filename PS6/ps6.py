@@ -229,7 +229,12 @@ def getPossibleWord(hand):
     return pw
 
 def pickBestWordFaster(hand, possibleword):
+   """
+   Recibe dos diccionarios y revisa cuales palabras son posibles y regresa el valor mas alto que se puede obtener con la mano dada
 
+   hand: dictionary
+   possibleword: dictionary
+   """
     bestword = ''
     bestwordvalue = 0
 
@@ -290,10 +295,9 @@ def playHand(hand, HAND_SIZE, pointsdict):
     print("Tiempo limite para dar una respuesta:", playertime)
     print("Partida actual:", displayHand(hand))
 
-
-
+    possibleword = getPossibleWord(hand)
     strtime = time.time()
-    word = pickBestWord(hand, pointsdict) # Determina la mejor palabra con las letras dadas
+    word = pickBestWordFaster(hand, possibleword) # Determina la mejor palabra con las letras dadas
     endtime = time.time()
     totaltime = endtime - strtime
     playertotaltime = playertime - totaltime
@@ -308,8 +312,9 @@ def playHand(hand, HAND_SIZE, pointsdict):
 
     while word[0] != '.': # Se ejecutará siempre y cuando no se introduzca un punto
         print("Partida actual:", displayHand(hand))
+        possibleword = getPossibleWord(hand)
         strtime = time.time()
-        word = pickBestWord(hand, pointsdict)  # Determina la mejor palabra con las letras dadas
+        word = pickBestWordFaster(hand, possibleword)  # Determina la mejor palabra con las letras dadas
         endtime = time.time()
         totaltime = endtime - strtime
         playertotaltime = playertotaltime - totaltime
@@ -354,7 +359,6 @@ def playGame(wordlist):
         if cmd == 'n' :
             hand = dealHand(HAND_SIZE)
             handOrg = hand.copy() # De esta manera se almacena la partida creada en este juego
-
             playHand(hand, HAND_SIZE, pointsdict)
             print()
         elif cmd == 'r':
