@@ -25,7 +25,7 @@ def printSubjects(subjects):
     Imprime un string que contiene los campos name, value y work para cada asignatura en el diccionario y el total del
     trabajo y valor de todas las asignaturas
     """
-    totalVal, totalWork = 0,0
+    totalVal, totalWork = 0, 0
     if len(subjects) == 0:
         return 'Empty SubjectList'
     res = 'Course\tValue\tWork\n======\t====\t=====\n'
@@ -130,6 +130,18 @@ def testBruteForceTime(subjects):
         # El tiempo razonable de computo se limitó a 3 segundos, nos regresa para hasta 7 horas de trabajo. Hace una
         # búsqueda muy lenta y ya para un computo de 15 horas como en la función greedyAdvisor su tiempo es exagerado.
 
+# ----------------------------------------- Test Dinnamyc Programming Advisor -----------------------------------------
+
+def testDPAdvisor(subjects):
+
+    maxWork = 15
+    # subjects = {'15.01': (9, 6), '6.00': (16, 8), '1.00': (7, 7), '6.01': (5, 3)}
+
+    print("\n<--- Dynamic Programming with Tree Method ---> \n")
+    printSubjects(dpAdvisorTree(subjects, maxWork))
+    print("<--- Dynamic Programming with Table Method ---> \n")
+    printSubjects(dpAdvisorTable(subjects, maxWork))
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 SUBJECT_FILENAME = "subjects.txt"
@@ -140,3 +152,4 @@ subjects = loadSubjects(SUBJECT_FILENAME)
 testLoadSubjects(subjects)
 testGreedyAdvisor(subjects)
 testBruteForceTime(subjects)
+testDPAdvisor(subjects)

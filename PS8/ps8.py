@@ -126,3 +126,147 @@ def bruteForceAdvisorHelper(subjects, maxWork, i, bestSubset, bestSubsetValue,
                 maxWork, i+1, bestSubset, bestSubsetValue, subset,
                 subsetValue, subsetWork)
         return bestSubset, bestSubsetValue
+
+#
+# Problem 4: Subject Selection By Dynamic Programming
+#
+
+def dpAdvisorTree(subjects, maxWork):
+    """
+    Regresa un diccionario, mapeando las asignaturas de forma name: (value, work) que contiene un set de asignaturas
+    que tiene el máximo valor sin exceder el valor de maxWork.
+
+    subjects: dictionary mapping subject name to (value, work)
+    maxWork: int >= 0
+    returns: dictionary mapping subject name to (value, work)
+    """
+    memo = {}
+
+    keys = list(subjects.keys())
+    valueList = []
+    workList = []
+    result = {}
+
+    for each in subjects:
+        valueList.append(subjects[each][VALUE])
+        workList.append(subjects[each][WORK])
+
+    value, answerList = dpTreeAdvisor(workList, valueList, len(workList) - 1, maxWork, memo)
+
+    for i in answerList:
+        result.update({keys[i]: subjects[keys[i]]})
+
+    return result
+
+def dpAdvisorTable(subjects, maxWork):
+    """
+    Regresa un diccionario, mapeando las asignaturas de forma name: (value, work) que contiene un set de asignaturas
+    que tiene el máximo valor sin exceder el valor de maxWork.
+
+    subjects: dictionary mapping subject name to (value, work)
+    maxWork: int >= 0
+    returns: dictionary mapping subject name to (value, work)
+    """
+
+    tupSubjects = []
+    result = {}
+
+    for each in subjects:
+        name = each
+        work = subjects[each][WORK]
+        value = subjects[each][VALUE]
+        tempSubject = (name, value, work)
+        tupSubjects.append(tempSubject)
+
+    answerList = dpTableAdvisor(tupSubjects, maxWork)
+    for item in answerList:
+        result.update({item[0]: (item[1], item[2])})
+
+    return result
+
+def dpTreeAdvisor(work, value, index, maxWork, memo):
+    """"
+    CodeHelp from MIT
+    """
+    # Ejemplificando el diccionario  {'15.01': (9, 6), '6.00': (16, 8), '1.00': (7, 7), '6.01': (5, 3)}, con un trabajo
+    # máximo de 15 horas. La función dinámica toma un tuple que contiene el indice de donde se posiciona, el trabajo
+    # restante y el valor generado.
+
+    #                                                   (index, work, value)
+    #                                                    3,      15,      0
+    #                                              /                            \
+    #                                        2,  15,  0                      2,  8,  7
+    #                                       /           \                   /          \
+    #                            1,  15,  0               1,  12,  5        1,  8,  7   1,  4, 12
+    #                          /           \             /           \      /       \
+    #                   0,15,0         0,7,16       0,12,5        0,4,21   0,8,7     0,0,23
+    #                      /  \           / \           / \           / \     / \
+    #               -,15,0  -,9,9   -,7,16 -,2,25  -,12,5 -,3,11  0,4,21 - -8,7  -,1,13
+    #
+    # El mejor caso sería -,2,25, donde se toman las asignaturas 15.01 y 6.00.
+
+    try:
+        return memo[(index, maxWork)]
+    except KeyError:
+        if index == 0:
+            if work[index] < maxWork:
+                memo[(index, maxWork)] = value[index], [index]
+                return value[index], [index]
+            else:
+                memo[(index, maxWork)] = 0, []
+                return 0, []
+    withoutIndex, courseList = dpTreeAdvisor(work, value, index - 1, maxWork, memo)
+    if work[index] > maxWork:
+        memo[(index, maxWork)] = withoutIndex, courseList
+        return withoutIndex, courseList
+    else:
+        withIndex, courseListTemp = dpTreeAdvisor(work, value, index - 1, maxWork - work[index], memo)
+        withIndex += value[index]
+    if withIndex > withoutIndex:
+        indexValue = withIndex
+        courseList = [index] + courseListTemp
+    else:
+        indexValue = withoutIndex
+
+    memo[(index, maxWork)] = indexValue, courseList
+    return indexValue, courseList
+
+
+def dpTableAdvisor(tupSubjects, maxWork):
+    """"
+    CodeHelp from rosettacode.org [http://rosettacode.org/wiki/Knapsack_problem/0-1#Dynamic_programming_solution]
+    """
+
+    # Ejemplificando el diccionario  {'15.01': (9, 6), '6.00': (16, 8), '1.00': (7, 7), '6.01': (5, 3)}, con un trabajo
+    # máximo de 15 horas. La función dinámica toma un tuple que contiene el indice de donde se posiciona, el trabajo
+    # restante y el valor generado.
+
+    #         0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15
+    # (9,6)   0 | 0 | 0 | 0 | 0 | 0 | 9 | 9 | 9 | 9 | 9  | 9  | 9  | 9  | 9  | 9
+    # (16,8)  0 | 0 | 0 | 0 | 0 | 0 | 9 | 9 |16 |16 | 16 | 16 | 16 | 16 | 25 | 25
+    # (7,7)   0 | 0 | 0 | 0 | 0 | 0 | 9 | 9 |16 |16 | 16 | 16 | 16 | 16 | 25 | 25
+    # (5,3)   0 | 0 | 0 | 5 | 5 | 5 | 9 | 9 |16 |16 | 16 | 21 | 21 | 21 | 25 | 25
+    #
+    # El mejor caso sería (16,8), (9,6) con un valor de 25 donde se toman las asignaturas 15.01 y 6.00.
+
+    table = [[0 for w in range(maxWork + 1)] for j in range(len(tupSubjects) + 1)]
+
+    for j in range(1, len(tupSubjects) + 1):
+        name, value, work = tupSubjects[j-1]
+        for w in range(1, maxWork + 1):
+            if work > w:
+                table[j][w] = table[j-1][w]
+            else:
+                table[j][w] = max(table[j-1][w], table[j-1][w-work] + value)
+
+    result = []
+    w = maxWork
+    for j in range(len(tupSubjects), 0, -1):
+        wasAdded = table[j][w] != table[j-1][w]
+
+        if wasAdded:
+            name, value, work = tupSubjects[j-1]
+            result.append(tupSubjects[j-1])
+            w -= work
+
+    return result
