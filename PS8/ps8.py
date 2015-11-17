@@ -2,9 +2,7 @@
 # MIT OpenCourseWare
 # Human Advisor with Dynamic Programming
 
-import time
-
-SUBJECT_FILENAME = "smallsub.txt"
+VALUE, WORK = 0, 1
 
 #
 # Problem 1: Building A Subject Dictionary
@@ -77,19 +75,54 @@ def greedyAdvisor(subjects, maxWork, comparator):
         totalWork = totalWork + subjects[maxSubject][1]
 
         if totalWork <= maxWork:
-            bestSubjects.update({maxSubject:subjects[maxSubject]})
+            bestSubjects.update({maxSubject: subjects[maxSubject]})
             keys.remove(maxSubject)
             maxSubject = 0
         else:
             return bestSubjects
 
+#
+# Problem 3: Subject Selection By Brute Force
+#
 
+def bruteForceAdvisor(subjects, maxWork):
+    """
+    Regresa un diccionario mapeado las asignaturas de forma name: (value, work), donde representa la selección global
+    optima de las asignaturas usando un algoritmo de fuerza bruta.
 
+    subjects: dictionary mapping subject name to (value, work)
+    maxWork: int >= 0
+    returns: dictionary mapping subject name to (value, work)
+    """
+    nameList = list(subjects.keys())
+    tupleList = list(subjects.values())
+    bestSubset, bestSubsetValue = \
+            bruteForceAdvisorHelper(tupleList, maxWork, 0, None, None, [], 0, 0)
+    outputSubjects = {}
+    for i in bestSubset:
+        outputSubjects[nameList[i]] = tupleList[i]
+    return outputSubjects
 
-
-
-
-
-
-
-
+def bruteForceAdvisorHelper(subjects, maxWork, i, bestSubset, bestSubsetValue,
+                            subset, subsetValue, subsetWork):
+    # Hit the end of the list.
+    if i >= len(subjects):
+        if bestSubset == None or subsetValue > bestSubsetValue:
+            # Found a new best.
+            return subset[:], subsetValue
+        else:
+            # Keep the current best.
+            return bestSubset, bestSubsetValue
+    else:
+        s = subjects[i]
+        # Try including subjects[i] in the current working subset.
+        if subsetWork + s[WORK] <= maxWork:
+            subset.append(i)
+            bestSubset, bestSubsetValue = bruteForceAdvisorHelper(subjects,
+                    maxWork, i+1, bestSubset, bestSubsetValue, subset,
+                    subsetValue + s[VALUE], subsetWork + s[WORK])
+            subset.pop()
+        bestSubset, bestSubsetValue = bruteForceAdvisorHelper(subjects,
+                maxWork, i+1, bestSubset, bestSubsetValue, subset,
+                subsetValue, subsetWork)
+        return bestSubset, bestSubsetValue

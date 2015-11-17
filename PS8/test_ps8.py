@@ -2,6 +2,7 @@
 # MIT OpenCourseWare
 # Test for Human Advisor with Dynamic Programming
 
+import time
 from ps8 import *
 
 #
@@ -76,11 +77,11 @@ def cmpRatio(subInfo1, subInfo2):
 def testGreedyAdvisor(subjects):
 
     failure = True
-
+    maxWork = 15
     subjects = {'15.01': (9, 6), '6.00': (16, 8), '1.00': (7, 7), '6.01': (5, 3)}
 
     # Test 1
-    maxWork = 15
+
     result = greedyAdvisor(subjects, maxWork, cmpValue)
 
     if result == {'15.01': (9, 6), '6.00': (16, 8)}:
@@ -90,7 +91,7 @@ def testGreedyAdvisor(subjects):
         print("\tSe esperaba un diccionario con {'15.01': (9, 6), '6.00': (16, 8)} y se devolvió un diccionario:", result)
 
     # Test 2
-    maxWork = 15
+
     result = greedyAdvisor(subjects, maxWork, cmpWork)
     if result == {'6.01': (5, 3), '15.01': (9, 6)}:
         failure = False
@@ -99,7 +100,7 @@ def testGreedyAdvisor(subjects):
         print("\tSe esperaba un diccionario con {'6.01': (5, 3), '15.01': (9, 6)} y se devolvió un diccionario:", result)
 
     # Test 3
-        maxWork = 15
+
     result = greedyAdvisor(subjects, maxWork, cmpRatio)
     if result == {'6.00': (16, 8), '6.01': (5, 3)}:
         failure = False
@@ -110,6 +111,25 @@ def testGreedyAdvisor(subjects):
     if not failure:
          print("SUCCESS: testGreedyAdvisor()")
 
+# ----------------------------------------- Test Brute Force -----------------------------------------
+
+def testBruteForceTime(subjects):
+    """ Esta función corre un test para la función bruteForceAdvisor y mide el tiempo para recobir una respuesta para
+    distintas horas de trabajo """
+
+    for i in range(1, 10):
+        start_time = time.time()
+        bruteForceAdvisor(subjects, i)
+        end_time = time.time()
+        counter = end_time - start_time
+        if counter > 3:
+            print('TIMEOUT: testBruteForceTime()')
+            break
+
+    # Observations
+        # El tiempo razonable de computo se limitó a 3 segundos, nos regresa para hasta 7 horas de trabajo. Hace una
+        # búsqueda muy lenta y ya para un computo de 15 horas como en la función greedyAdvisor su tiempo es exagerado.
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 SUBJECT_FILENAME = "subjects.txt"
@@ -119,3 +139,4 @@ subjects = loadSubjects(SUBJECT_FILENAME)
 
 testLoadSubjects(subjects)
 testGreedyAdvisor(subjects)
+testBruteForceTime(subjects)
