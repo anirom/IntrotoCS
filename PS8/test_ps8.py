@@ -142,6 +142,43 @@ def testDPAdvisor(subjects):
     print("<--- Dynamic Programming with Table Method ---> \n")
     printSubjects(dpAdvisorTable(subjects, maxWork))
 
+# ----------------------------------------- Test Dinnamyc Programming -----------------------------------------
+
+def testDp(subjects):
+
+    maxWork = 7
+
+    # Time Brute Force
+    start_time = time.time()
+    bruteForceAdvisor(subjects, maxWork)
+    end_time = time.time()
+    counterBruteForce = end_time - start_time
+    print("Tiempo de respuesta:", counterBruteForce)
+
+    # Time DP Tree
+
+    start_time = time.time()
+    dpAdvisorTree(subjects, maxWork)
+    end_time = time.time()
+    counterDPTree = end_time - start_time
+    print("Tiempo de respuesta:", counterDPTree)
+
+    # Time DP Table
+
+    start_time = time.time()
+    dpAdvisorTable(subjects, maxWork)
+    end_time = time.time()
+    counterDPTable = end_time - start_time
+    print("Tiempo de respuesta:", counterDPTable)
+
+    if counterBruteForce > counterDPTree and counterBruteForce > counterDPTree :
+        print("SUCCESS: Las funciones dinámicas son más rápidas que la función de fuerza bruta.")
+    else:
+        print("FAILURE: Resultó más rápida la fuerza bruta.")
+
+    # Observations
+        # La memorización, además de hacer más estructurada la busqueda simplifica los cálculos, haciendo más
+        # veloz la respuesta.
 # ----------------------------------------- Running Test -----------------------------------------
 
 SUBJECT_FILENAME = "subjects.txt"
@@ -153,3 +190,4 @@ testLoadSubjects(subjects)
 testGreedyAdvisor(subjects)
 testBruteForceTime(subjects)
 testDPAdvisor(subjects)
+testDp(subjects)
