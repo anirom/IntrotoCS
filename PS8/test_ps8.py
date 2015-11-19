@@ -22,8 +22,8 @@ def testLoadSubjects(subjects):
 
 def printSubjects(subjects):
     """
-    Imprime un string que contiene los campos name, value y work para cada asignatura en el diccionario y el total del
-    trabajo y valor de todas las asignaturas
+    Imprime un string que contiene los campos name, value y work para cada asignatura en el diccionario y el trabajo
+    total y el valor de todas las asignaturas
     """
     totalVal, totalWork = 0, 0
     if len(subjects) == 0:
