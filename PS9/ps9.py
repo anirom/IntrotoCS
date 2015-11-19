@@ -4,9 +4,11 @@
 
 from string import *
 
+
 class Shape(object):
     def area(self):
         raise AttributeException("Las subclases deberían 'override' este método.")
+
 
 class Square(Shape):
     """
@@ -23,7 +25,7 @@ class Square(Shape):
         """
         Regresa el area del cuadrado
         """
-        return self.side**2
+        return self.side ** 2
 
     def __str__(self):
         return 'Cuadrado con lado ' + str(self.side)
@@ -34,6 +36,7 @@ class Square(Shape):
         other: objeto que revisa la igualdad
         """
         return type(other) == Square and self.side == other.side
+
 
 class Circle(Shape):
     """
@@ -50,7 +53,7 @@ class Circle(Shape):
         """
         Regresa el area aproximada del circulo
         """
-        return 3.14159*(self.radius**2)
+        return 3.14159 * (self.radius ** 2)
 
     def __str__(self):
         return 'Circulo con radio ' + str(self.radius)
@@ -61,6 +64,7 @@ class Circle(Shape):
         other: objeto que revisa la igualdad
         """
         return type(other) == Circle and self.radius == other.radius
+
 
 #
 # Problem 1: Create the Triangle class
@@ -83,7 +87,7 @@ class Triangle(Shape):
         """
         Regresa el area aproximada del triángulo equilatero
         """
-        return (1/2)*(self.base*self.height)
+        return (1 / 2) * (self.base * self.height)
 
     def __str__(self):
         return 'Triangulo con base ' + str(self.base) + ' y altura ' + str(self.height)
@@ -94,3 +98,71 @@ class Triangle(Shape):
         other: objeto que revisa la igualdad
         """
         return type(other) == Triangle and self.base == other.base and self.height == self.height
+
+
+#
+# Problem 2: Create the ShapeSet class
+#
+
+class ShapeSet:
+    """
+    Esta clase contiene un set de figuras, ya sea triángulo, cuadrado o círculo
+    """
+
+    def __init__(self):
+        """
+        Inicializa cualquier variable que necesite
+        """
+        self.dataShapes = []
+        self.index = 0
+
+    def addShape(self, sh):
+        """
+        Agrega un shape sh al set, donde dos shapes no pueden ser identicos
+        sh: shape to be added
+        """
+
+        if type(sh) == Square:
+            if str(sh) in self.dataShapes:
+                return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
+            else:
+                self.dataShapes.append(str(sh))
+                return print("\033[1;32mADDED:\033[1;m", str(sh))
+
+        if type(sh) == Circle:
+            if str(sh) in self.dataShapes:
+                return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
+            else:
+                self.dataShapes.append(str(sh))
+                return print("\033[1;32mADDED:\033[1;m", str(sh))
+
+        if type(sh) == Triangle:
+            if str(sh) in self.dataShapes:
+                return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
+            else:
+                self.dataShapes.append(str(sh))
+                return print("\033[1;32mADDED:\033[1;m", str(sh))
+
+    def __iter__(self):
+        """
+        Esta función regresa un iterador que permite iterar sobre el set de shapes, un shape a la vez
+        """
+        return self
+
+    def __next__(self):
+        """
+        Funcion necesaria para poder hacer la iteración
+        """
+        if self.index < len(self.dataShapes):
+            self.index += 1
+            return self.dataShapes[self.index - 1]
+        else:
+            raise StopIteration
+
+    def __str__(self):
+        """
+        Regresa una representacion en string del set, que consiste en el string de cada shape, categorizado por tipo:
+        primero circulos, luego cuadrados y después triángulos
+        """
+
+        return "\n".join(sorted(self.dataShapes))

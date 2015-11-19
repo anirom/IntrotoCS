@@ -10,7 +10,7 @@ from ps9 import *
 
 # ----------------------------------------- Test Shapes -----------------------------------------
 def testShapes():
-    shapes = {}
+
     print("\n ---------- Cuadrados ----------")
     # Cuadrado 1
     print("\n\tCuadrado 1")
@@ -56,6 +56,39 @@ def testShapes():
 
     print("\nIgualdad entre los triangulos es", triangulo1 == triangulo2)
 
+# ----------------------------------------- Test ShapeSet -----------------------------------------
+
+def testShapeSet():
+    print("\n ---------- Set Shapes ----------")
+    # Creación de las figuras
+
+    triangulo2 = Triangle(2, 8)
+    triangulo3 = Triangle(6, 7)
+    cuadrado1 = Square(4)
+    cuadrado2 = Square(8)
+    circulo1 = Circle(7)
+    triangulo1 = Triangle(2, 8)
+
+
+    # Creación del set
+    shapeSet = ShapeSet()
+    shapeSet.addShape(triangulo2)
+    shapeSet.addShape(triangulo3)
+    shapeSet.addShape(cuadrado1)
+    shapeSet.addShape(cuadrado2)
+    shapeSet.addShape(circulo1)
+    shapeSet.addShape(triangulo1)
+
+    # Itera sobre las figuras que hay
+    print("\n --- iterator --- ")
+    for item in shapeSet:
+        print(item)
+
+    # Imprime las figuras existentes
+    print("\n --- print --- ")
+    print(shapeSet)
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 testShapes()
+testShapeSet()
