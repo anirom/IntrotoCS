@@ -85,10 +85,38 @@ def testShapeSet():
         print(item)
 
     # Imprime las figuras existentes
-    print("\n --- print --- ")
+    print("\n --- print --- \n")
     print(shapeSet)
+
+# ----------------------------------------- Test FindLargest -----------------------------------------
+
+def testFindLargest():
+
+    print("\n ---------- Figuras con área máxima ----------")
+    # Test 1
+
+    shapeSet = ShapeSet()
+    shapeSet.addShape(Triangle(3, 6))
+    shapeSet.addShape(Circle(7))
+    shapeSet.addShape(Square(8))
+
+    largest = findLargest(shapeSet)
+
+    for item in largest:
+        print("Figura con área máxima:", item)
+
+    # Test 2
+
+    shapeSet2 = ShapeSet()
+    shapeSet2.addShape(Triangle(3, 8))
+    shapeSet2.addShape(Triangle(4, 6))
+
+    largest = findLargest(shapeSet2)
+    for item in largest:
+        print("Figura con área máxima:", item)
 
 # ----------------------------------------- Running Test -----------------------------------------
 
 testShapes()
 testShapeSet()
+testFindLargest()

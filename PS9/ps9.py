@@ -113,6 +113,7 @@ class ShapeSet:
         """
         Inicializa cualquier variable que necesite
         """
+        self.setShapes = []
         self.dataShapes = []
         self.index = 0
 
@@ -126,6 +127,7 @@ class ShapeSet:
             if str(sh) in self.dataShapes:
                 return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
             else:
+                self.setShapes.append(sh)
                 self.dataShapes.append(str(sh))
                 return print("\033[1;32mADDED:\033[1;m", str(sh))
 
@@ -133,6 +135,7 @@ class ShapeSet:
             if str(sh) in self.dataShapes:
                 return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
             else:
+                self.setShapes.append(sh)
                 self.dataShapes.append(str(sh))
                 return print("\033[1;32mADDED:\033[1;m", str(sh))
 
@@ -140,6 +143,7 @@ class ShapeSet:
             if str(sh) in self.dataShapes:
                 return print("\033[1;31mIN STOCK:\033[1;m", str(sh))
             else:
+                self.setShapes.append(sh)
                 self.dataShapes.append(str(sh))
                 return print("\033[1;32mADDED:\033[1;m", str(sh))
 
@@ -166,3 +170,28 @@ class ShapeSet:
         """
 
         return "\n".join(sorted(self.dataShapes))
+
+#
+# Problem 3: Find the largest shapes in a ShapeSet
+#
+
+def findLargest(shapes):
+    """
+    Regresa un tuple que contiene los elementos de ShapeSet que tiene el área más grande.
+    shapes: ShapeSet
+    """
+
+    figure = {}
+    areaMax = []
+    tupleAreaMax = []
+
+    for item in shapes.setShapes:
+        area = item.area()
+        figure.update({str(item): area})
+        areaMax.append(area)
+
+    for key, value in figure.items():
+        if value == max(areaMax):
+            tupleAreaMax.append(key)
+
+    return tuple(tupleAreaMax)
