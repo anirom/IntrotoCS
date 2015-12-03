@@ -115,8 +115,17 @@ def testFindLargest():
     for item in largest:
         print("Figura con área máxima:", item)
 
+# ----------------------------------------- Test ReadFile -----------------------------------------
+def testReadFile():
+
+    print("\n ---------- Añadiendo figuras desde un file ----------")
+    filename = "shapes.txt"
+    shapeSet = readShapesFromFile(filename)
+    print(shapeSet)
+
 # ----------------------------------------- Running Test -----------------------------------------
 
 testShapes()
 testShapeSet()
 testFindLargest()
+testReadFile()

@@ -195,3 +195,34 @@ def findLargest(shapes):
             tupleAreaMax.append(key)
 
     return tuple(tupleAreaMax)
+
+#
+# Problem 4: Read shapes from a file into a ShapeSet
+#
+
+def readShapesFromFile(filename):
+    """
+    Recupera información de las figuras de un archivo dado.
+    Crea y regresa un ShapeSet con las figuras encontradas.
+    filename: string
+    """
+
+    inputFile = open(filename)
+    shapeSet = ShapeSet()
+
+    for line in inputFile:
+        if 'circle' in line:
+            shape = line.split(",")
+            shapeSet.addShape(Circle(shape[1]))
+            # print(shapeSet)
+        if 'square' in line:
+            shape = line.split(",")
+            shapeSet.addShape(Square(shape[1]))
+            # print(shapeSet)
+        if 'triangle' in line:
+            shape = line.split(",")
+            shapeSet.addShape(Triangle(shape[1],shape[2]))
+            # print(shapeSet)
+
+    return shapeSet
+
