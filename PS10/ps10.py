@@ -85,10 +85,11 @@ def getWordScore(word, n):
 #
 
 class Hand(object):
+
     def __init__(self, handSize, initialHandDict = None):
         """
         Inicializa una mano.
-        handSize: El tamaño de la mano
+        handSize: El tamaño de letras de la jugada
         postcondition: Inicializa una mano con un set random de letras iniciales
         """
 
@@ -180,3 +181,92 @@ class Hand(object):
                 finalhand = finalhand + letter + " " # Almacena letra por letra para mostrarlo de forma horizontal
 
         return finalhand
+
+#
+# Problem 3: Representing a Player
+#
+
+class Player(object):
+    """
+    Clase general que describe a un jugador. Almacena su ID, su juego y score.
+    """
+    def __init__(self, idNum, hand):
+        """
+        Inicializa el jugador
+
+        idNum: integer: 1 for player 1, 2 for player 2.  Used in informational
+        displays in the GUI.
+
+        hand: An object of type Hand.
+
+        postcondition: This player object is initialized
+        """
+        self.score = 0
+        self.idNum = idNum
+        self.hand = hand
+
+    def getHand(self):
+        """
+        Regresa la mano del jugador.
+
+        returns: la mano asociada con el jugador.
+        """
+
+        return self.hand
+
+    def addPoints(self, points):
+        """
+        Añade puntos al score total del jugador.
+
+        points: el numero de puntos añadidos al score del jugador
+
+        postcondition: el score total del jugador es incrementado por los puntos
+        """
+
+        self.score += points
+        return "Añadidos {} puntos.".format(points)
+
+    def getScore(self):
+        """
+        Regresa el score total del jugador
+
+        returns: Un entero especificando el player score
+        """
+        return self.score
+
+    def getIdNum(self):
+        """
+        Regresa el ID number del jugador, 1 para el jugador 1, 2 para el jugador 2.
+
+        returns: Un entero especificando el player ID
+        """
+
+        return self.idNum
+
+    def __lt__(self, other):
+        """
+        Compara los jugadores por sus scores.
+
+        returns: 1 si el score del jugador es mayor al del otro, -1 si es el score del jugador es menor que el otro y 0
+        si son iguales.
+        """
+
+        if self.score < other.score:
+            return 1
+        elif self.score > other.score:
+            return -1
+
+    def __eq__(self, other):
+
+        if self.score == other.score:
+            return 0
+        else:
+            return False
+
+    def __str__(self):
+        """
+        Representa este jugador como un string
+
+        returns: a string representation of this player
+        """
+        return "Jugador {}. Score: {}".format(self.getIdNum(), self.getScore())
