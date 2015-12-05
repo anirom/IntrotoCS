@@ -10,16 +10,19 @@ from ps10 import *
 
 # ----------------------------------------- Test LoadWords -----------------------------------------
 
-def testLoadWords(wordlist):
+def testLoadWords():
     """
     Unit test for loadWords
     """
     #
     # Verificando que cargue correctamente la lista de palabras validas.
     #
-    if type(wordlist) is list:
+
+    wordlist = Wordlist()
+
+    if type(wordlist.getList()) is list:
         print("Loading words...")
-        print(" ", len(wordlist), "words loaded.")
+        print(" ", len(wordlist.getList()), "words loaded.")
     else:
         print("Failed Loading List")
 
@@ -75,7 +78,7 @@ def testHand():
     print("¿h,g = j?", h == j or g == j)
 
     if failure:
-        print("SUCCES: testHand()")
+        print("SUCCESS: testHand()")
     else:
         print("FAILURE: testHand()")
 
@@ -133,14 +136,87 @@ def testPlayer():
               p2 < p1)
 
     if not failure:
-        print("SUCCES: testPlayer()")
+        print("SUCCESS: testPlayer()")
     else:
         print("FAILURE: testPlayer()")
 
+# ----------------------------------------- Test Computer Player -----------------------------------------
+def testComputer():
+
+    #
+    #  Test para getPossibleWord que se usa para el método pickBestWord
+    #
+
+    print("\n ---------- Test Computer Player ---------")
+
+    # Test 1
+
+    hand = {'f': 1, 'e': 1, 'z': 1}
+    p = ComputerPlayer(1, hand)
+    print(p.getHand())
+    pw = p.getPossibleWord()
+
+
+    if pw['fez'] == 'fez' or pw['ef'] == 'ef' or pw['zfe'] == 'zfe':
+        failure = False
+    else:
+        failure = True
+        print("FAILURE (Test 1): testPickBestWord()")
+        print("\tNo se espera la palabra 'fez' o 'ef' o 'zfe', pero se obtuvo", pw['fez'], pw['ef'], pw['zfe'])
+
+    # Test 2
+
+    hand = {'p':1, 'o':1, 'e': 1, 'w':1, 'r':1}
+    p = ComputerPlayer(2, hand)
+    pw = p.getPossibleWord()
+
+    word = 'rror'
+    worddict = pw.get(word, None)
+
+    if not worddict is None:
+        print("FAILURE (Test 2): testPickBestWord()")
+    else:
+        failure = False
+
+    #
+    #  Test para pickBestWord, donde la función regresará el valor más alto
+    #
+
+    # Test 1
+
+    hand = {'g': 1, 'o': 2, 'l': 3, 'b': 1, 'a': 1, 'y':1}
+    p = ComputerPlayer(1, hand)
+    pw = p.getPossibleWord()
+    bestword = p.pickBestWord(pw)
+
+    if bestword == 'globally':
+        failure = False
+    else:
+        print("FAILURE (Test 1): testPickBestWord()")
+        print("\tSe esperaba la palabra 'globally' con un valor de 14 puntos, y se obtuvo", bestword, "con un valor de",
+              bestvalue, "puntos.")
+
+    # Test 2
+
+    hand = {'z': 2, 'y': 1}
+    p = ComputerPlayer(2, hand)
+    pw = p.getPossibleWord()
+    bestword = p.pickBestWord(pw)
+
+    if bestword == '.':
+        failure = False
+    else:
+        print("FAILURE (Test 2): testPickBestWord()")
+        print("\tNo se espera ninguna palabra y se obtuvo", bestword)
+
+    if not failure:
+        print("SUCCESS: testComputerPlayer()")
+
+
 # ----------------------------------------- Running Test -----------------------------------------
 
-wordlist = loadWords()
-testLoadWords(wordlist)
+testLoadWords()
 testHand()
 testPlayer()
+testComputer()
 

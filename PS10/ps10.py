@@ -3,6 +3,7 @@
 # Word Game
 
 import random
+from itertools import permutations
 import string
 
 # Global Constants
@@ -21,22 +22,6 @@ HUMAN_VS_COMP = 2
 
 WORDLIST_FILENAME = "words.txt"
 
-def loadWords():
-    """
-    Regresa todas las palabras válidas que se usarán para la partida,
-    todas conformadas por letras minúsculas.
-
-    El archivo words.txt es el que contiene las palabras validas.
-    """
-
-    # inFile: file
-    inFile = open(WORDLIST_FILENAME, 'r')
-    # wordlist: list of strings
-    wordlist = []
-    for line in inFile:
-        wordlist.append(line.strip().lower())
-    return wordlist
-
 def getFrequencyDict(sequence):
     """
     Regresa un diccionario donde las claves son letras de la partida
@@ -53,7 +38,7 @@ def getFrequencyDict(sequence):
         freq[x] = freq.get(x,0) + 1
     return freq
 
-def getWordScore(word, n):
+def getWordScore(word):
     """
     Regresa el score para cada palabra, asumiendo que la palabra es valida.
 
@@ -76,7 +61,7 @@ def getWordScore(word, n):
 
         total = total + value
 
-    if len(word) == n:
+    if len(word) == HAND_SIZE:
         total += 50
     return total
 
@@ -105,6 +90,7 @@ class Hand(object):
 
         self.initialSize = handSize
         self.hand = initialHandDict
+        self.index = 0
 
     def update(self, word):
         """
@@ -181,6 +167,15 @@ class Hand(object):
                 finalhand = finalhand + letter + " " # Almacena letra por letra para mostrarlo de forma horizontal
 
         return finalhand
+
+    def getHand(self):
+        """
+        Regresa la mano del jugador.
+
+        returns: la mano asociada con el jugador.
+        """
+
+        return self.hand
 
 #
 # Problem 3: Representing a Player
@@ -269,4 +264,221 @@ class Player(object):
 
         returns: a string representation of this player
         """
-        return "Jugador {}. Score: {}".format(self.getIdNum(), self.getScore())
+        return "Jugador {} \n Score: {}".format(self.getIdNum(), self.getScore())
+
+#
+# Problem 4: Representing a Computer Player
+#
+
+class ComputerPlayer(Player):
+    """
+    Computer player class.
+    Hace todo lo que el jugador hace, con la excepción de utiliza el método PickBestwWord
+    """
+
+    def __init__(self, idNum, hand):
+        Player.__init__(self, idNum, hand)
+        self.pointsdict = {}
+        self.getWordsToPoints()
+
+    def getWordsToPoints(self):
+        """
+        Regresa un diccionario que contiene todas las palabras con sus respectivos puntajes
+        """
+
+        # Toma cada palabra en la lista y forma un diccionario con la palabra y sus puntos equivalentes
+
+        wordlist = Wordlist()
+
+        for word in wordlist.getList():
+            score = getWordScore(word)
+            self.pointsdict.update({word: score})
+
+        return self.pointsdict
+
+    def getPossibleWord(self):
+        """
+        Esta función toma el hand de letras y regresa una lista de palabras posibles.
+
+        returns: a list of possible words
+        """
+
+        finalhand = ''
+        pw = {}
+        hand = self.hand.getHand()
+
+        for letter in hand:
+            for j in range(hand[letter]):
+                finalhand = finalhand + letter
+
+        for L in range(2, len(finalhand)+1):
+            for subset in permutations(finalhand, L):
+                word = ''.join(subset)
+                # print(word)
+                pw.update({word: word})
+
+        return pw
+
+    def pickBestWord(self, possibleword):
+        """
+        Recibe dos diccionarios y revisa cuales palabras son posibles y regresa el valor mas alto que se puede obtener con la mano dada
+
+        hand: dictionary
+        possibleword: dictionary
+        """
+
+        bestword = ''
+        bestwordvalue = 0
+
+        words = possibleword.values()
+        for word in words:
+            if word in self.pointsdict:
+                wordvalue = self.pointsdict[word]
+                if wordvalue > bestwordvalue:
+                    # print(word)
+                    bestwordvalue = self.pointsdict[word]
+                    bestword = word
+
+        if bestwordvalue > 0:
+            # print(bestword, bestwordvalue)
+            return bestword
+
+        return '.'
+
+    def playHand(self, callback, wordlist):
+        """
+        Juega una mano, pasando las palabras elegidas a la función de llamada.
+        """
+        pw = self.getPossibleWord()
+        while callback(self.pickBestWord(pw)):
+            pass
+
+class Wordlist(object):
+    """
+    A word list.
+    """
+    def __init__(self):
+        """
+        Initializes a Wordlist object.
+
+        postcondition: words are read in from a file (WORDLIST_FILENAME, a
+        global constant) and stored as a list.
+        """
+        inputFile = open(WORDLIST_FILENAME)
+        try:
+            self.wordlist = []
+            for line in inputFile:
+                self.wordlist.append(line.strip().lower())
+        finally:
+            inputFile.close()
+
+    def containsWord(self, word):
+        """
+        Testea que la wordlist contiene la palabra
+
+        word: The word to check (a string)
+
+        returns: Verdadero si la palabra está en la wordlist, Falso si no
+        """
+        return word in self.wordlist
+
+    def getList(self):
+        return self.wordlist
+
+class EndHand(Exception): pass
+
+class Game(object):
+    """
+    Almacena el estado necesatio para jugar una ronda de word game
+    """
+    def __init__(self, mode, wordlist):
+        """
+        Inicializa un juego.
+
+        mode: Se pueden tener 3 valores: - HUMAN_SOLO, HUMAN_VS_COMP and HUMAN_VS_HUMAN
+
+        postcondition: Initializes the players and their hands.
+        """
+        hand = Hand(HAND_SIZE)
+        hand2 = Hand(HAND_SIZE, hand.hand.copy())
+        if mode == HUMAN_SOLO:
+            self.players = [Player(1, hand)]
+        elif mode == HUMAN_VS_COMP:
+            self.players = [Player(1, hand),
+                            ComputerPlayer(2, hand2)]
+        elif mode == HUMAN_VS_HUMAN:
+            self.players = [Player(1, hand),
+                            Player(2, hand2)]
+        self.playerIndex = 0
+        self.wordlist = wordlist
+
+    def getCurrentPlayer(self):
+        """
+        Obtieene el objeto Player de acuerdo al player activo.
+
+        returns: The active Player object.
+        """
+        return self.players[self.playerIndex]
+
+    def nextPlayer(self):
+        """
+        Cambia el estado del juego, entonces el siguiente jugador es el player activo.
+
+        postcondition: playerIndex is incremented
+        """
+        if self.playerIndex + 1 < len(self.players):
+            self.playerIndex += 1
+            return True
+        else:
+            return False
+
+    def gameOver(self):
+        """
+        Determina si el juego se ha acabado.
+
+        returns: Verdadero si playerIndex >= el numero de jugadas, False de otra forma
+        """
+        return self.playerIndex >= len(self.players)
+
+    def tryWord(self, word):
+
+        if word == '.':
+            raise EndHand()
+        player = self.getCurrentPlayer()
+        hand = player.getHand()
+        if type(player) == ComputerPlayer:
+            ps = player.getPossibleWord()
+            word = player.pickBestWord(ps)
+            if word == '.':
+                raise EndHand()
+
+
+        if self.wordlist.containsWord(word) and hand.containsLetters(word):
+            points = getWordScore(word)
+            player.addPoints(points)
+            hand.update(word)
+            if hand.isEmpty():
+                raise EndHand()
+            return points
+        else:
+            return None
+
+    def getWinner(self):
+        return max(self.players)
+
+    def getNumPlayers(self):
+        return len(self.players)
+
+    def isTie(self):
+        return len(self.players) > 1 and self.players[0].getScore() == self.players[1].getScore()
+
+    def __str__(self):
+        """
+        Convierte este game object en un string
+
+        returns: la concatenacion del string en representación de los jugadores
+        """
+        string = ''
+        for player in self.players:
+            string += str(player)
+        return string
